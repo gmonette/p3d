@@ -3,14 +3,16 @@
 ## 2011-12-22
 ##
 
+
+#' @export
 spin <-
 function( theta=0, phi=15,
-          fov = par3d("FOV"), zoom = par3d("zoom"), 
+          fov = par3d("FOV"), zoom = par3d("zoom"),
           scale = par3d("scale"), stay = FALSE) {
-          
+
           # Like rgl viewpoint but starts with defaults except
           # for theta (rotation around vertical axis)
-          # and phi (angular height above the horisontal plane) 
+          # and phi (angular height above the horisontal plane)
           # PLAN:
           # without arguments it should just start spinning
           # USAGE: see rgl.viewpoint and rgl.snapshot
@@ -20,6 +22,8 @@ function( theta=0, phi=15,
 
 }
 
+
+#' @export
 bend <- function(x,linear = .8) {
   if ( linear >= 1) return(x)
   low <- min(x,na.rm=T)
@@ -29,25 +33,28 @@ bend <- function(x,linear = .8) {
   knot2 <- 1 - knot1
   psi <- .5/(knot1-knot1^2)
   z <- (x - low)/(high-low)
-  ret <- ifelse( z < knot1, psi*z^2, 
+  ret <- ifelse( z < knot1, psi*z^2,
                  ifelse( z < knot2, psi*knot1^2 + 2*psi*knot1*(z-knot1),
                          1 - psi*(1-z)^2))
   low + (high - low) *ret
 }
 
 
+#' @export
 qseq <- function( ... ,linear = .8) {
   if(linear >= 1) seq(...) else bend( seq(...), linear = linear)
 }
 
+
+#' @export
 spinto <-
   function (theta = NULL, phi = NULL, fov = NULL, dpf = .5, n , type = "quad",
             linear = .85,
-           snap = NULL,...) 
+           snap = NULL,...)
   {
     # started programming  GM 2013-09-05
-    #  Spins the current rgl window with a constant increment in theta and phi. 
-    # 
+    #  Spins the current rgl window with a constant increment in theta and phi.
+    #
     um <- par3d("userMatrix")
     Acos <- function(x) 360 * acos(x)/(2 * pi)
     Asin <- function(x) 360 * asin(x)/(2 * pi)
@@ -55,7 +62,7 @@ spinto <-
     theta.phi <- function() {
       par3d()
       um <- par3d("userMatrix")
-      list(theta = Atan2(-um[1, 3], um[1, 1]), phi = Atan2(um[3, 
+      list(theta = Atan2(-um[1, 3], um[1, 1]), phi = Atan2(um[3,
                                                               2], um[2, 2]))
     }
     tp <- theta.phi()

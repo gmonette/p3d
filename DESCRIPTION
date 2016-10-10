@@ -5,7 +5,11 @@ Version: 0.2.0.9000
 Date: 2015-05-08
 Author: Georges Monette
 Maintainer: Georges Monette <georges@yorku.ca>
-Description: p3d simplifies plotting data and fitted surfaces for models that are functionally defined by two continuous variables or by two continuous variables and one categorical variable
+Description: p3d simplifies plotting data and fitted surfaces for models that
+    are functionally defined by two continuous variables or by two continuous
+    variables and one categorical variable
 License: GPL-2
-Depends: rgl
+Depends:
+    rgl
 LazyData: TRUE
+RoxygenNote: 5.0.1

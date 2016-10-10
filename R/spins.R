@@ -4,6 +4,7 @@
 ##
 
 
+#' @export
 spins <-
 function( inc.theta = 1/4, inc.phi = 0, theta = NULL, phi = NULL) {
  help = "

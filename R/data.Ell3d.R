@@ -2,6 +2,8 @@
 ## p3d:data.Ell3d.R
 ## 2011-12-22
 ##
+
+#' @export
 data.Ell3d <-
 function(  ... ) {
     #

@@ -5,9 +5,9 @@
 ##   on the use of 'chol' to factorize the variance
 ##   in ellipse3d.default didn't work well because
 ##   replacing ellipse3d.default with Ellipse3d herein
-##   messed up the colours, presumably because of 
-##   namespace issues. 
-##   So the current fix involved fattening up the 
+##   messed up the colours, presumably because of
+##   namespace issues.
+##   So the current fix involved fattening up the
 ##   variance matrices a bit but this might cause
 ##   unexpected problems.
 ##
@@ -17,10 +17,12 @@
 
 ##  Added 'partial ellipse' from p3d.beta 2011-11-05 (GM)
 
+
+#' @export
 Ellipse3d <-
-function (x, scale = c(1, 1, 1), centre = c(0, 0, 0), level = 0.95, 
-          t = sqrt(qchisq(level, 3)), which = 1:3, subdivide = 3, smooth = TRUE, 
-          ...) 
+function (x, scale = c(1, 1, 1), centre = c(0, 0, 0), level = 0.95,
+          t = sqrt(qchisq(level, 3)), which = 1:3, subdivide = 3, smooth = TRUE,
+          ...)
 {
   # This fixes the factorization problem in ellipse3d.default
   # but is not currently used because of namespace problems
@@ -41,26 +43,28 @@ function (x, scale = c(1, 1, 1), centre = c(0, 0, 0), level = 0.95,
   cov <- x[which, which]
   chol <- fac(cov)
   sphere <- subdivision3d(cube3d(...), subdivide)
-  norm <- sqrt(sphere$vb[1, ]^2 + sphere$vb[2, ]^2 + sphere$vb[3, 
+  norm <- sqrt(sphere$vb[1, ]^2 + sphere$vb[2, ]^2 + sphere$vb[3,
                                                                ]^2)
   for (i in 1:3) sphere$vb[i, ] <- sphere$vb[i, ]/norm
   sphere$vb[4, ] <- 1
-  if (smooth) 
+  if (smooth)
     sphere$normals <- sphere$vb
   result <- scale3d(transform3d(sphere, chol), t, t, t)
-  if (!missing(scale)) 
+  if (!missing(scale))
     result <- scale3d(result, scale[1], scale[2], scale[3])
-  if (!missing(centre)) 
+  if (!missing(centre))
     result <- translate3d(result, centre[1], centre[2], centre[3])
   return(result)
 }
 
+#' @export
 Ell3d <- function(x , ...) {
 #   Adds a data ellipse(s) to a 3D plot using the data frame"
 #   for the plot"
       UseMethod("Ell3d")
 }
 
+#' @export
 Ell3d.default <- function( x,  radius = 1, col,
                            alpha = 0.5,
                            ellipsoid = TRUE,
@@ -84,9 +88,9 @@ Ell3d.default <- function( x,  radius = 1, col,
       lam <- e$values
 #      lam <- pmax(lam, max(lam)/100000)
       lam <- pmax(lam, max(lam)/100000)
-      d%*%(e$vectors%*%diag(lam)%*%t(e$vectors))%*%d 
+      d%*%(e$vectors%*%diag(lam)%*%t(e$vectors))%*%d
   }
-#   
+#
 #   fatten <- function(vv) {
 #     vv + .0000001 * diag(diag(vv))
 #   }
@@ -96,21 +100,21 @@ Ell3d.default <- function( x,  radius = 1, col,
     if ( i == 1 ) return( cbind(0,mat))
     cbind( mat[, 1:(i-1)], 0, mat[,i:(ncol(mat)-1)])
   }
-  
+
   ##
   ## TO DO: modify to take center and shape
   ##
-  
+
   condvar <- function( vv, i ) {
-    vv[-i,-i] - 
+    vv[-i,-i] -
       vv[-i,i,drop=FALSE]%*%solve( vv[i,i,drop=FALSE],vv[i,-i,drop=FALSE])
-  }  
+  }
   Levels <- function(x) {
     if (is.factor(x))
       levels(x)
     else unique(x)
   }
-  
+
   ellp <- function(partial, partial.offset, cc, vv, radius,partial.col,partial.lwd,partial.alpha){
     for ( jj in partial ){
       for ( off in partial.offset ){
@@ -125,7 +129,7 @@ Ell3d.default <- function( x,  radius = 1, col,
       }
     }
   }
-  
+
   pars <- Plot3d.par()
   if (missing(col)) col <- pars$col
   if ((!missing(x))||(!missing(variance))){
@@ -141,7 +145,7 @@ Ell3d.default <- function( x,  radius = 1, col,
                              col=col, alpha = alpha, add = TRUE)
       if ( !is.null(partial) ){
         ellp(partial, partial.offset, cc, vv, radius,partial.col,partial.lwd,partial.alpha)
-      }  
+      }
     } else {  # x is missing but variance is not
       # use variance and mean
       vv <- variance
@@ -150,7 +154,7 @@ Ell3d.default <- function( x,  radius = 1, col,
                              col=col, alpha = alpha, add = TRUE)
       if ( !is.null(partial) ){
         ellp(partial, partial.offset, cc, vv, radius,partial.col,partial.lwd,partial.alpha)
-      }    
+      }
     }
   } else {  # use displayed data
     if (verbose > 1)
@@ -164,8 +168,8 @@ Ell3d.default <- function( x,  radius = 1, col,
                 col=col[1], alpha = alpha, add = TRUE)
         if ( !is.null(partial) ){
           ellp(partial, partial.offset, cc, vv, radius,partial.col,partial.lwd,partial.alpha)
-        }  
-        
+        }
+
       }
     } else {
       inds <- split( 1:nrow(xmat), pars$data[,pars$names['g']])
@@ -177,7 +181,7 @@ Ell3d.default <- function( x,  radius = 1, col,
           #disp(gmat)
           if(FALSE){
           ev <- eigen(vv,symmetric=TRUE, only.values = TRUE)
-        
+
           # fatten up nearly singular matrix to avoid crash in rgl
           if ( (max(ev$values)/min(ev$values)) > 1e07 )
             vv <- vv + (max(ev$values)*1e-07) *diag(nrow(vv))
@@ -185,11 +189,11 @@ Ell3d.default <- function( x,  radius = 1, col,
           cc <- apply(na.omit(gmat), 2, mean)
           plot3d( ellipse3d(vv,centre = cc, t = radius),
                   col=col[ii], alpha=0.5, add = TRUE)
-          
+
           if ( !is.null(partial) ){
             ellp(partial, partial.offset, cc, vv, radius,partial.col,partial.lwd,partial.alpha)
-          }  
-          
+          }
+
         }
       }
       )

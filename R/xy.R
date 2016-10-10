@@ -4,6 +4,9 @@
 ##
 
 # fixed buglet using plist in do.call
+
+
+#' @export
 xy <-
 function( p1, p2 ) {
           # turn list of points into matrix for plotting

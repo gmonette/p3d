@@ -3,6 +3,7 @@
 ## 2011-12-22
 ##
 
+#' @export
 Fit3d <-
 function( fit, names.vars = pars$names,
         other.vars = NULL,   #list of values for variables used in model but not in display
@@ -30,10 +31,10 @@ function( fit, names.vars = pars$names,
     Mod.vars.function <- function(fit) names(formals(fit))
     Mod.vars.lme <- function(fit) rownames(attr(terms(fit),'factors'))
     Mod.vars.default <- function(fit) names( model.frame(fit))
-    
+
     mod.vars <- Mod.vars(fit)
-    
-    
+
+
     PP <- function(fit,...) UseMethod("PP")
     PP.function <- function(fit,...) Evalf(fit,...)
     PP.lme <- function(fit,...) predict( fit,..., level = 0)
@@ -42,7 +43,7 @@ function( fit, names.vars = pars$names,
            if( type == 'link') predict( fit, ..., type = 'link')
     }
     PP.default <- function(fit, ...) predict(fit, ...)
-    
+
     Levels <- function( x ) if (is.factor(x)) levels(x) else unique(x)
 
     pars <- Plot3d.par()
@@ -63,7 +64,7 @@ function( fit, names.vars = pars$names,
         col.grid <- rep(col.grid, length.out = length( g.levs) )
         pred <- expand.grid( x = xvals, z = zvals, g = g.levs )
         names(pred) <- names.vars[c("x","z","g")]
-        
+
         # THE FOLLOWING IS WRONG: THIS NEEDS TO BE INCORPORATED IN
         # THE CALL TO EXPAND.GRID
         if ( !is.null( other.vars)) {
@@ -92,7 +93,7 @@ function( fit, names.vars = pars$names,
         if (grid) rgl.surface(xvals, zvals, yhat, color=col.grid[gi], alpha=alpha, lit=lit,
                                     front="lines", back="lines",...)
     }
-    if (residuals ){  
+    if (residuals ){
         mf <- pars$data
         fitted <- PP( fit, newdata = mf )
         yy <- mf[[ names.vars['y'] ]]
@@ -118,7 +119,7 @@ function( fit, names.vars = pars$names,
                     as.vector(rbind(zz,zz)),
                     color=rep(col,each=2),
                     col = rep(col,each=2))
-          
+
         }
     }
     if ( verbose > 0 && !is.function(fit) ) summary(fit)

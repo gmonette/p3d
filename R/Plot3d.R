@@ -5,17 +5,20 @@
 ##            created in Plot3d.formula
 ##
 
+
+#' @export
 Plot3d <- function( x, y, z, ...)  UseMethod("Plot3d")
 
 
 
+#' @export
 Plot3d.par <- function(..., new = FALSE){
    # A new version (2010-11-30) of Plot3d.par
    # that maintains separate lists for each rgl window allowing
    # the selection of different windows
 
   a <- list(...)
-  
+
   #disp( environment())
   #if ( is.null(names(a))) disp(a)
   #else disp(names(a))
@@ -28,7 +31,7 @@ Plot3d.par <- function(..., new = FALSE){
     p <- get(".Plot3d.par",1)
     p[[pos]] <- list()
     assign(".Plot3d.par",p,1)
-  } 
+  }
   if ( length( p <- get(".Plot3d.par",1)) < pos){
      p <- get(".Plot3d.par",1)
     p[[pos]] <- list()
@@ -39,7 +42,7 @@ Plot3d.par <- function(..., new = FALSE){
       p <- get(".Plot3d.par",1)
       p[[pos]][names(a)] <- a
       assign(".Plot3d.par",p,1)
-    
+
       ret <- p[[pos]]
    }
    else {
@@ -51,6 +54,7 @@ Plot3d.par <- function(..., new = FALSE){
 
 
 
+#' @export
 Plot3d.lm <-
 function( fit , ...) {
     Plot3d(formula(fit), model.frame(fit), ...)
@@ -58,6 +62,8 @@ function( fit , ...) {
 }
 
 ## This is the S3 method that is used for plotting, i.e. it is called by Plot3d.default
+
+#' @export
 Plot3d.formula <-
 function( formula = attr(data, "formula"),
             data = sys.parent() ,
@@ -98,16 +104,16 @@ function( formula = attr(data, "formula"),
 #    dd <- model.frame( fmla, data, subset = subset )
     # GM 2013-01-01: added na.action = na.include so data frame
     #    in .Plot3d.par has rows matching original data set so
-    # > Id3d(labels = dsm$Country) 
+    # > Id3d(labels = dsm$Country)
     # will work correctly
     dd <- model.frame( fmla, data, subset = subset, na.action = na.include )
-    
+
     if ( ncol(dd) < 3) stop( "Need at least three variables for Plot3d")
     if ( ncol(dd) > 4) stop( "More than 4 variables not yet implemented")
     if ( ncol(dd) == 3) {
         nams <- names(dd)
         names(nams) <- c('y','x','z')
-        Plot3d.par( data = dd, names=nams, has.groups = FALSE, col=col[1], new = TRUE)  
+        Plot3d.par( data = dd, names=nams, has.groups = FALSE, col=col[1], new = TRUE)
         # GM 2013-01-02: added '[1]' to col = col
         # to avoid meaningless rainbow
         if ( verbose > 1 ) disp( Plot3d.par() )
@@ -177,6 +183,7 @@ function( formula = attr(data, "formula"),
 }
 
 
+#' @export
 Plot3d.default <-
 function(x, y, z, xlab, ylab, zlab, groups = NULL, ...) {
    help = "

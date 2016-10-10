@@ -5,16 +5,20 @@
 
 # merged Points.*.R (MF)
 
+
+#' @export
 Points3d <-
 function(x,...) UseMethod("Points3d")
 
 # Points3d.default <-
 # 		function(x,...) scat3d( x,..., clear =FALSE)
 
+#' @export
 Points3d.formula <-
 		function(x,...) Plot3d(x, ... , clear = FALSE)
 
 
+#' @export
 Points3d.default <-
   function( ... )  {
     a <- args3d(...)
@@ -35,9 +39,11 @@ Points3d.default <-
   }
 
 
+#' @export
 Points3d_ <-
-  function(x,...) UseMethod("Points3d")
+  function(x,...) UseMethod("Points3d_")
 
+#' @export
 Points3d_.default <-
   function( ... )  {
     a <- args3d(...)

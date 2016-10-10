@@ -14,6 +14,7 @@
 ## axes of ellipses and tangents.
 
 
+#' @export
 ell <-
 function( center = c(0,0), shape = diag(2) , radius  = 1, n =100) {
           fac <- function( x )  {
@@ -34,7 +35,8 @@ function( center = c(0,0), shape = diag(2) , radius  = 1, n =100) {
          class(ret) <- "ell"
          ret
     }
-    
+
+#' @export
 dell <-
 function( x, y, radius = 1, ...) {
         if ( (is.matrix(x) && (ncol(x) > 1))|| is.data.frame(x)) mat <- as.matrix(x[,1:2])
@@ -43,6 +45,7 @@ function( x, y, radius = 1, ...) {
         ell( apply(mat,2,mean), var(mat), radius = radius, ...)
     }
 
+#' @export
 ell.conj <-
 function( center, shape, dir, radius = 1, len = 1) {
             # returns conjugate axes or tangent lines to ellipse
@@ -57,15 +60,18 @@ function( center, shape, dir, radius = 1, len = 1) {
     }
 
 
+#' @export
 center <-
 function( obj, ... ) UseMethod("center")
 
 
+#' @export
 center.ell <-
 function( obj, ...) attr(obj, 'parms') $ center
 
 
 
+#' @export
 ConjComp <- function( X , Z = diag( nrow(X)) , ip = diag( nrow(X)), tol = 1e-07 ) {
                   # also in package spida:
                   # keep versions consistent
@@ -79,12 +85,16 @@ ConjComp <- function( X , Z = diag( nrow(X)) , ip = diag( nrow(X)), tol = 1e-07 
                      Z %*% a
             }
 
+#' @export
 uv <- function(object,...) UseMethod('uv')
 
+#' @export
 uv.ell <- function( object, u, radius = 1, ...){
         p <- attr(object,"parms")
         uv( p$shape, u=u, radius=radius)
 }
+
+#' @export
 uv.default <-
 function( object, u , radius = 1, ...) {
        # returns 'unit' u and conjugate v
@@ -96,6 +106,7 @@ function( object, u , radius = 1, ...) {
 
 
 
+#' @export
 ellpt <- function(ell, dir = c(0,1) , radius = 1 ) {
    # point on an ellipse in a particular direction
    p <- attr(ell,'parms')
@@ -108,6 +119,7 @@ ellpt <- function(ell, dir = c(0,1) , radius = 1 ) {
    t( ax %*% rbind(radius) + as.vector(p$center))               # returns a row for plotting
 }
 
+#' @export
 ellptc <- function(ell, dir = c(0,1) , radius = 1 ) {
    # point on an ellipse in a conjugate direction
    p <- attr(ell,'parms')
@@ -118,6 +130,7 @@ ellptc <- function(ell, dir = c(0,1) , radius = 1 ) {
    t( ax %*% rbind(radius) + as.vector(p$center))               # returns a row for plotting
 }
 
+#' @export
 elltanc <- function( ell, dir = c(0,1), radius = 1, len = 1, v = c(-1,1)) {
        p <- attr(ell,'parms')
        ax <- ellptc( ell, dir = dir, radius = len * v)
@@ -126,6 +139,7 @@ elltanc <- function( ell, dir = c(0,1), radius = 1, len = 1, v = c(-1,1)) {
        t( t(ax) -as.vector(p$center) + as.vector(pt))
 }
 
+#' @export
 elltan <- function( ell, dir = c(0,1), radius = 1, len = 1, v = c(-1,1)) {
        p <- attr(ell,'parms')
        ax <- ellpt( ell, dir = dir, radius =  len * v)
@@ -133,6 +147,7 @@ elltan <- function( ell, dir = c(0,1), radius = 1, len = 1, v = c(-1,1)) {
        t( t(ax) -as.vector(p$center) + as.vector(pt))
 }
 
+#' @export
 ellbox <- function( ell, dir = c(0,1) , radius = 1 ){
       rbind(
  elltan(  ell, dir = dir, radius = radius) , NA,
@@ -141,6 +156,7 @@ ellbox <- function( ell, dir = c(0,1) , radius = 1 ){
  elltanc( ell, dir = dir, radius = -radius) )
 }
 
+#' @export
 ellplus <-
 function (center = rep(0, 2), shape = diag(2), radius = 1, n = 100,
     angles = (0:n) * 2 * pi/n, fac = chol, ellipse = all, diameters = all,
@@ -166,6 +182,7 @@ function (center = rep(0, 2), shape = diag(2), radius = 1, n = 100,
     do.call("rbindna", ret[c(ellipse, diameters, diameters, box)])
 }
 
+#' @export
 ellpts <- function( ell, dir = c(0,1), radius = 1, len = 1, v = c(-1,1)) {
   rbind(
     ellpt( ell, dir = dir, radius = radius * c(-1,0,1)),
@@ -175,6 +192,7 @@ ellpts <- function( ell, dir = c(0,1), radius = 1, len = 1, v = c(-1,1)) {
             v = radius * c(-1,0,1)))
 }
 
+#' @export
 ellptsc <- function( ell, dir = c(0,1), radius = 1, len = 1, v = c(-1,1)) {
   rbind(
     ellptc( ell, dir = dir, radius = radius * c(-1,0,1)),

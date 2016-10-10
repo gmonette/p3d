@@ -9,10 +9,14 @@
 
 # eventual addition to p3d
 
+
+#' @export
 fg <- function(stay = TRUE) {
   Plot3d.par(stay=stay)
   rgl.bringtotop(stay = stay)
 }
+
+#' @export
 fg_ <- function(stay = FALSE) {
   Plot3d.par(stay=stay)
   rgl.bringtotop(stay = stay)

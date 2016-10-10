@@ -3,6 +3,7 @@
 ## 2011-12-22
 ##
 
+#' @export
 args3d <-   # remove this version is the next one works
 function(...) {
 help <- "
@@ -33,7 +34,7 @@ help <- "
         #disp(cbind( args[arg.ind][[1]])[,pos])
         cbind( args[arg.ind][[1]])[,pos]
     }
-    
+
     if( is.null(names(args))) names(args) <- rep("",length(args) )
     nn <- names(args)
 		#disp(nn)
@@ -74,8 +75,9 @@ help <- "
 # 1) keeps unnamed arguments
 # 2) changes 'col' to 'color'
 
+#' @export
 args3d <-
-function (...) 
+function (...)
 {
     na2f <- function(x) {
         x[is.na(x)] <- FALSE
@@ -86,14 +88,14 @@ function (...)
     getdim <- function(nam, args) {
         pos <- regexpr(nam, names(args))
         arg.ind <- pos > 0
-        if (length(pos <- pos[pos > 0]) == 0) 
+        if (length(pos <- pos[pos > 0]) == 0)
             return(0)
         cbind(args[arg.ind][[1]])[, pos]
     }
-    if (is.null(names(args))) 
+    if (is.null(names(args)))
         names(args) <- rep("", length(args))
     nn <- names(args)
-    if ((length(nn) > 2) && all(nn[1:3] == "")) 
+    if ((length(nn) > 2) && all(nn[1:3] == ""))
         names(args)[1:3] <- c("x", "y", "z")
     nn <- names(args)
     if ((length(nn) > 0) && (nn[1] == "")) {
@@ -108,13 +110,13 @@ function (...)
     #disp(nxyz)
     xyzs <- args[nxyz > 0]
     oargs <- args[nxyz < 0]
-    xyz <- cbind(x = getdim("x", xyzs), y = getdim("y", xyzs), 
+    xyz <- cbind(x = getdim("x", xyzs), y = getdim("y", xyzs),
         z = getdim("z", xyzs))
     if (is.character(xyz)) {
         bbox <- par3d("bbox")
-        mins <- matrix(bbox[c(1, 3, 5)], nrow = nrow(xyz), ncol = 3, 
+        mins <- matrix(bbox[c(1, 3, 5)], nrow = nrow(xyz), ncol = 3,
             byrow = TRUE)
-        maxs <- matrix(bbox[1 + c(1, 3, 5)], nrow = nrow(xyz), 
+        maxs <- matrix(bbox[1 + c(1, 3, 5)], nrow = nrow(xyz),
             ncol = 3, byrow = TRUE)
         mids <- (mins + maxs)/2
         xyz[na2f(xyz == "min")] <- mins[na2f(xyz == "min")]

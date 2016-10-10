@@ -3,6 +3,8 @@
 ## 2011-12-22
 ##
 
+
+#' @export
 E.phi <-
 function( phi ) {
     # incline horizontal plane by phi degrees

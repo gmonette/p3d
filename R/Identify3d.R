@@ -6,6 +6,8 @@
 
 # BUG in Id3d: If you provide 'col' the color used is white
 
+
+#' @export
 Id3d <-
 function (select,labels=row.names(data), pad = 1 , ...) {
   if( !missing(select)) {
@@ -38,10 +40,13 @@ cat("Click right mouse button without selecting a point to terminate\n")
     substring(ret,pad+1)
 }
 
+
+#' @export
 tf <- function( x, y = 1) {
   if(missing(y)) cat("y is missing\n")
 }
 
+#' @export
 Identify3d <-
 function(x, ... ) {
 '
@@ -51,6 +56,7 @@ function(x, ... ) {
     UseMethod("Identify3d")
 }
 
+#' @export
 Identify3d.formula <-
 function( formula = attr(data, "formula"),
             data = sys.parent()  , labels = NULL , adj = 0,  ...) {
@@ -61,6 +67,8 @@ function( formula = attr(data, "formula"),
     if ( ncol(dd) < 3) stop( "Need at least three variables for identify3d")
     Identify3d( dd[[2]], dd[[1]], dd[[3]], labels = labels, adj = adj, ...)
 }
+
+#' @export
 Identify3d.default <-
 function (
     x = pars$data[[pars$names['x']]],
@@ -82,7 +90,7 @@ function (
             # GM 2012-01-02:
             # labels <- rownames(dat)
             if( missing(labels) ) labels <- rownames(dat)
-            
+
        }
     select3d <-function (...) {
     # adapted from select3d and rgl.selecte3d in the rgl package, but passes
@@ -150,6 +158,7 @@ function (
 
 
 
+#' @export
 Flag3d <-
   function ( select,
   # adds a label to a Plot3d display to selected points
@@ -163,7 +172,7 @@ Flag3d <-
     offset = ((100/length(x))^(1/3)) * 0.02,
     ...) {
     pars <- Plot3d.par()
-  
+
     ## added by GM Nov 9
     if ( ( is.matrix(x) && (ncol(x) > 1) ) || is.data.frame(x) ) {
       dat <- x
@@ -172,7 +181,7 @@ Flag3d <-
       z <- dat[,3]
       if( missing(labels) ) labels <- rownames(dat)
     }
-    if ( pars$has.groups && missing(groups)) { 
+    if ( pars$has.groups && missing(groups)) {
         groups <- pars$data[[pars$names['g']]]
     }
     valid <- if (is.null(groups)) complete.cases(x, y, z)
@@ -188,7 +197,7 @@ Flag3d <-
     # z <- (z - min(z))/(max(z) - min(z))
     rgl.bringtotop()
     groups <- if (!is.null(groups)) as.numeric(groups[valid])
-  
+
       if ( is.numeric(select) || is.logical(select)) select <- labels[which]
       which <- labels %in% select
       if (!is.null(groups)) cols <- col[groups][which] else cols <- col[1]

@@ -4,6 +4,7 @@
 ##
 
 
+#' @export
 Surf3d <-
 function( x ,...) {
   help = "
@@ -12,6 +13,7 @@ function( x ,...) {
   UseMethod("Surf3d")
 }
 
+#' @export
 Surf3d.default <-
 		function( x, z, y, ...) {
 	g <- expand.grid( x = sort(unique(x)), z = sort(unique(z)))

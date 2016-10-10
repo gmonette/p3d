@@ -4,6 +4,7 @@
 ##
 
 
+#' @export
 S.theta <-
 function( theta ) {
     # rotate through vertical axis through phi degrees

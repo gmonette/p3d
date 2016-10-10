@@ -14,6 +14,7 @@
 
 ##
 
+#' @export
 Init3d <-
 function( par3d = list(),
       family = c('sans','serif', "mono", "symbol"),
@@ -24,11 +25,13 @@ function( par3d = list(),
     family = match.arg(family)
     mod = list(family=family, cex = cex, font = font,mouseMode = mouseMode)
     par3d [ names(mod)] <- mod
-    open3d(...)  
+    open3d(...)
     do.call('par3d', par3d)
 }
 
 ## Alternative version that uses open3d
+
+#' @export
 Init3d_ <-
   function( par3d = list(),
             family = c('sans','serif', "mono", "symbol"),

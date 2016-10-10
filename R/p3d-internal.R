@@ -3,10 +3,13 @@
 ## 2011-12-22
 ##
 
+
+#' @export
 p3d <- function() "Compiled 2011-12-19 15:37"
 
 
 
+#' @export
 na.include  <- function (obj)
 {
   # from library(Hmisc)

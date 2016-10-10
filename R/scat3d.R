@@ -4,6 +4,7 @@
 ##
 
 
+#' @export
 scat3d <-
 function(x, y, z, xlab=deparse(substitute(x)), ylab=deparse(substitute(y)),
     zlab=deparse(substitute(z)),
@@ -120,7 +121,7 @@ function(x, y, z, xlab=deparse(substitute(x)), ylab=deparse(substitute(y)),
         scale <- scale / mean(scale)
         if( verbose) disp( scale )
         par3d( scale =  scale)
-        
+
         # disp("Point 1")
         # disp(scale)
         # disp(par3d('scale'))

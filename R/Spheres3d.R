@@ -1,25 +1,26 @@
 ##
-## p3d:Lines3d.R
-## 2011-12-22
+## p3d:Spheres3d.R
+## 2016-10-08
 ##
+## Copined from Lines3d.R
 ## merged Lines3d.R and Lines3d.default.R  10-30-2011 (MF)
 #  fixed args for Lines3d.default as an S3 method
 # TODO: obj serves no useful role and should be deleted if no other Linesed methods contemplated -- removed 11-04-2011 (GM)
 
 
 #' @export
-Lines3d <-
-function( ... ) {
+Spheres3d <-
+function( ... , verbose = FALSE) {
     "
     Lines3d allows arguments to be vectors or matrices whose corresponding
     axes as specified with names of the form 'x', 'xy', 'yxz', etc.
     "
-    UseMethod("Lines3d")
+    UseMethod("Spheres3d")
 }
 
 #' @export
-Lines3d.default <-
-		function( ... )  {
+Spheres3d.default <-
+		function( ... , verbose = FALSE)  {
 	a <- args3d(...)
 	# disp(a)
 	xyz <- a$x
@@ -34,9 +35,9 @@ Lines3d.default <-
 	a$x <- xyz
 	# names(a) <- sub('^lwd$','size', names(a))
 	# do.call("rgl.lines", a)
-	do.call("segments3d", a)
+	if (verbose) disp(a)
+	do.call("spheres3d", a)
 }
-
 
 # Lines3d( y = 1, z = 1.1, x =c(0,2), col = 'red')
 # Lines3d( y = 1.1, z = 1.1, x =c(0,2), color = 'red')

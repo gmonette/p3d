@@ -4,6 +4,7 @@
 ##
 
 
+#' @export
 Inc <-
 function( n ) {
         n <- as.character(n)
