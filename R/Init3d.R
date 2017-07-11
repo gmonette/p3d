@@ -21,12 +21,16 @@ function( par3d = list(),
       mouseMode = c('polar','fov','zoom'),
       cex = .8,
       font = 2,
+      left = 700, top = 50, size = 750,
       ...) {
     family = match.arg(family)
-    mod = list(family=family, cex = cex, font = font,mouseMode = mouseMode)
+    mod = list(family=family, cex = cex, font = font,
+               mouseMode = mouseMode,
+               windowRect = c(left,top,left + size, top + size))
     par3d [ names(mod)] <- mod
     open3d(...)
     do.call('par3d', par3d)
+    fg()
 }
 
 ## Alternative version that uses open3d
