@@ -2,9 +2,18 @@
 % Please edit documentation in R/misscode.R
 \name{misscode}
 \alias{misscode}
-\title{Recode missing data}
+\alias{misscode.default}
+\alias{misscode.factor}
+\alias{misscode.data.frame}
+\title{Recode missing data for p3d}
 \usage{
 misscode(x, ...)
+
+\method{misscode}{default}(x, ..., offset = 0.1)
+
+\method{misscode}{factor}(x, ...)
+
+\method{misscode}{data.frame}(x, ...)
 }
 \arguments{
 \item{x}{vector with possible missing values}

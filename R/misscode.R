@@ -1,4 +1,4 @@
-#' Recode missing data
+#' Recode missing data for p3d
 #'
 #' Recodes missing data to a value less than the minimum value -- or to a non-missing
 #' code to indicate missingness for a factor -- to facilitate plotting in 3d
@@ -8,6 +8,8 @@
 #'
 #' @export
 misscode <- function(x,...) UseMethod('misscode')
+#' @rdname misscode
+#' @method misscode default
 misscode.default <- function(x,...,offset = .1) {
   rr <- range(x, na.rm = TRUE)
   vmiss <- min(x,na.rm = TRUE) - offset * diff(rr)
@@ -16,12 +18,16 @@ misscode.default <- function(x,...,offset = .1) {
   attr(x,'nas') <- nas
   x
 }
+#' @rdname misscode
+#' @method misscode factor
 misscode.factor <- function(x, ...) {
   nas <- is.na(x)
   x <- addNA(x, ifany = TRUE)
   attr(x,'nas') <- nas
   x
 }
+#' @rdname misscode
+#' @method misscode data.frame
 misscode.data.frame <- function(x,...) {
   x[] <- lapply(x[],misscode,...)
   isna <- lapply( x, function(x) attr(x,'nas'))
