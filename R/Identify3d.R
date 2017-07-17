@@ -29,11 +29,11 @@ cat("Click right mouse button without selecting a point to terminate\n")
         labels <- paste( padstring, labels, sep = "")
     }
     if ( pars$has.groups ) {
-        ret <- Identify3d(
+        ret <- p3d::Identify3d(
             data[[nams['x']]],  data[[nams['y']]],data[[nams['z']]],
             groups = data[[nams['g']]],labels=labels,...)
     } else {
-        ret <- Identify3d(
+        ret <- p3d::Identify3d(
             data[[nams['x']]],  data[[nams['y']]],data[[nams['z']]],
             labels=labels,...)
     }

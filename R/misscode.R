@@ -10,6 +10,7 @@
 misscode <- function(x,...) UseMethod('misscode')
 #' @rdname misscode
 #' @method misscode default
+#' @export
 misscode.default <- function(x,...,offset = .1) {
   rr <- range(x, na.rm = TRUE)
   vmiss <- min(x,na.rm = TRUE) - offset * diff(rr)
@@ -20,6 +21,7 @@ misscode.default <- function(x,...,offset = .1) {
 }
 #' @rdname misscode
 #' @method misscode factor
+#' @export
 misscode.factor <- function(x, ...) {
   nas <- is.na(x)
   x <- addNA(x, ifany = TRUE)
@@ -28,6 +30,7 @@ misscode.factor <- function(x, ...) {
 }
 #' @rdname misscode
 #' @method misscode data.frame
+#' @export
 misscode.data.frame <- function(x,...) {
   x[] <- lapply(x[],misscode,...)
   isna <- lapply( x, function(x) attr(x,'nas'))
