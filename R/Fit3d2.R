@@ -2,10 +2,10 @@
 ## p3d:Fit3d.R
 ##
 ## Figure out what this does that's different
-## 2018-10-11: Add Mod.vars.stanfit
+##
 
 #' @export
-Fit3d <-
+Fit3d2 <-
   function (fit,
             names.vars = pars$names,
             other.vars = NULL,
@@ -47,11 +47,12 @@ Fit3d <-
       Evalf(fit, ...)
     PP.lme <- function(fit, ...)
       predict(fit, ..., level = 0)
-    PP.glm <- function(fit, ...) {
+    PP.glm <- function(fit, ...)
+      function(fit, ...) {
         if (type == "response")
-          return(predict(fit, ..., type = "response"))
+          predict(fit, ..., type = "response")
         if (type == "link")
-          return(predict(fit, ..., type = "link"))
+          predict(fit, ..., type = "link")
       }
     PP.default <- function(fit, ...)
       predict(fit, ...)

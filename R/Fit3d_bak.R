@@ -1,45 +1,51 @@
 ##
 ## p3d:Fit3d.R
-##
-## Figure out what this does that's different
-## 2018-10-11: Add Mod.vars.stanfit
+## 2011-12-22
+## Backup old version for new version with stanfit method
+
 
 #' @export
-Fit3d <-
-  function (fit,
-            names.vars = pars$names,
-            other.vars = NULL,
-            grid.lines = 26,
-            col = "blue",
-            fill = TRUE,
-            grid = TRUE,
-            base.grid = FALSE,
-            col.grid = col,
-            col.res = col,
-            residuals = FALSE,
-            xlim = c(bbox[1],
-                     bbox[2]),
-            zlim = c(bbox[5], bbox[6]),
-            verbose = 0,
-            type = "response",
-            alpha = 0.5,
-            lit = FALSE,
-            FUN = function(x)
-              x,
-            ...)
-  {
+Fit3d_bak <-
+  function(fit,
+           names.vars = pars$names,
+           other.vars = NULL,
+           #list of values for variables used in model but not in display
+           grid.lines = 26,
+           col = 'blue',
+           fill = TRUE,
+           grid = TRUE ,
+           base.grid = FALSE,
+           # draw grid in base horizontal plane
+           col.grid = col,
+           col.res = col,
+           residuals = FALSE,
+           xlim = c(bbox[1], bbox[2]),
+           zlim = c(bbox[5], bbox[6]),
+           verbose = 0,
+           type = 'response',
+           alpha = .5,
+           lit = FALSE,
+           FUN = function (x)
+             x,
+           # inverse of transfomation of Y in model,
+           # e.g. if model is log(y) ~ x + z then FUN = exp
+           ...) {
+    ##
+    ##  add groups
+    ##
+
     Mod.vars <- function(fit)
       UseMethod("Mod.vars")
     Mod.vars.function <- function(fit)
       names(formals(fit))
     Mod.vars.lme <-
       function(fit)
-        rownames(attr(terms(fit), "factors"))
-    Mod.vars.stanfit <- function(fit)
-      names(fit)
+        rownames(attr(terms(fit), 'factors'))
     Mod.vars.default <- function(fit)
       names(model.frame(fit))
+
     mod.vars <- Mod.vars(fit)
+
 
     PP <- function(fit, ...)
       UseMethod("PP")
@@ -47,19 +53,23 @@ Fit3d <-
       Evalf(fit, ...)
     PP.lme <- function(fit, ...)
       predict(fit, ..., level = 0)
-    PP.glm <- function(fit, ...) {
-        if (type == "response")
-          return(predict(fit, ..., type = "response"))
-        if (type == "link")
-          return(predict(fit, ..., type = "link"))
+    PP.glm <- function(fit, ...)
+      function(fit, ...) {
+        if (type == 'response')
+          predict(fit, ..., type = 'response')
+        if (type == 'link')
+          predict(fit, ..., type = 'link')
       }
     PP.default <- function(fit, ...)
       predict(fit, ...)
-    Levels <- function(x)
-      if (is.factor(x))
-        levels(x)
+
+    Levels <-
+      function(x)
+        if (is.factor(x))
+          levels(x)
     else
       unique(x)
+
     pars <- Plot3d.par()
     if (missing(col))
       col <- pars$col
@@ -67,30 +77,33 @@ Fit3d <-
       disp(col)
     if (verbose > 1)
       disp(mod.vars)
-    use.groups <- names.vars["g"] %in% mod.vars
-    has.groups <- !(is.na(names.vars["g"]))
+    use.groups <-  names.vars['g'] %in% mod.vars
+    # disp(names.vars)
+    has.groups <-  !(is.na(names.vars['g']))
     if (verbose > 1)
       disp(use.groups)
     if (verbose > 1)
       disp(has.groups)
-    bbox <- par3d("bbox")
+    bbox <- par3d('bbox')
     xvals <- seq(xlim[1], xlim[2], length.out = grid.lines)
     zvals <- seq(zlim[1], zlim[2], length.out = grid.lines)
     if (use.groups) {
-      g.levs <- Levels(pars$data[[pars$names["g"]]])
+      g.levs <- Levels(pars$data[[pars$names['g']]])
       col <- rep(col, length.out = length(g.levs))
       col.grid <- rep(col.grid, length.out = length(g.levs))
       pred <- expand.grid(x = xvals, z = zvals, g = g.levs)
       names(pred) <- names.vars[c("x", "z", "g")]
+
+      # THE FOLLOWING IS WRONG: THIS NEEDS TO BE INCORPORATED IN
+      # THE CALL TO EXPAND.GRID
       if (!is.null(other.vars)) {
         for (i in 1:length(other.vars)) {
           pred[[names(other.vars)[i]]] <- other.vars[[i]]
         }
       }
-      yhats <- array(FUN(PP(fit, newdata = pred)), dim = c(grid.lines,
-                                                           grid.lines, length(g.levs)))
-    }
-    else {
+      yhats <- array(FUN(PP(fit, newdata = pred)),
+                     dim = c(grid.lines, grid.lines, length(g.levs)))
+    } else {
       pred <- expand.grid(x = xvals, z = zvals)
       names(pred) <- names.vars[c("x", "z")]
       if (!is.null(other.vars)) {
@@ -98,8 +111,8 @@ Fit3d <-
           pred[[names(other.vars)[i]]] <- other.vars[[i]]
         }
       }
-      yhats <- array(FUN(PP(fit, newdata = pred)), dim = c(grid.lines,
-                                                           grid.lines, 1))
+      yhats <- array(FUN(PP(fit, newdata = pred)),
+                     dim = c(grid.lines, grid.lines, 1))
     }
     for (gi in 1:(dim(yhats)[3])) {
       yhat <- yhats[, , gi]
@@ -131,37 +144,38 @@ Fit3d <-
     if (residuals) {
       mf <- pars$data
       fitted <- PP(fit, newdata = mf)
-      yy <- mf[[names.vars["y"]]]
-      xx <- mf[[names.vars["x"]]]
-      zz <- mf[[names.vars["z"]]]
+      yy <- mf[[names.vars['y']]]
+      xx <- mf[[names.vars['x']]]
+      zz <- mf[[names.vars['z']]]
       if (has.groups) {
-        gg <- mf[[names.vars["g"]]]
+        gg <- mf[[names.vars['g']]]
         if (is.null(gg))
           gg <- 1
       }
+      #disp(has.groups)
+      # disp(gg)
+      #fitted <- PP(fit)
       if (base.grid == TRUE)
         fitted <- 0 * fitted + bbox[3]
       if (has.groups) {
+        #  disp(col)
         rgl.lines(
           as.vector(rbind(xx, xx)),
-          as.vector(rbind(yy,
-                          fitted)),
+          as.vector(rbind(yy, fitted)),
           as.vector(rbind(zz, zz)),
-          color = rep(col[as.factor(gg)],
-                      each = 2),
+          color = rep(col[as.factor(gg)], each = 2),
           col = rep(col[as.factor(gg)], each = 2)
         )
-      }
-      else {
+      } else {
+        # disp(col)
         rgl.lines(
           as.vector(rbind(xx, xx)),
-          as.vector(rbind(yy,
-                          fitted)),
+          as.vector(rbind(yy, fitted)),
           as.vector(rbind(zz, zz)),
-          color = rep(col,
-                      each = 2),
+          color = rep(col, each = 2),
           col = rep(col, each = 2)
         )
+
       }
     }
     if (verbose > 0 && !is.function(fit))

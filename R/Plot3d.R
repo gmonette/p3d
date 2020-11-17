@@ -180,7 +180,7 @@ function( formula = attr(data, "formula"),
     if ( verbose > 0 )   disp( 'Plot3d in else')
     if ( verbose > 0 ) disp( par3d('scale'))
     }
-    cat("\nUse left mouse to rotate, middle mouse (or scroll) to zoom, right mouse to change perspective\n")
+    message("Use left mouse to rotate, middle mouse (or scroll) to zoom, right mouse to change perspective")
 }
 
 
