@@ -39,10 +39,13 @@ function( par3d = list(),
 Init3d_ <-
   function( par3d = list(),
             family = c('sans','serif', "mono", "symbol"),
-            mouseMode = c('polar','fov','zoom'),
+            # mouseMode = c('polar','fov','zoom'),
+            mouseMode =
+              c(none="none", left="polar", right="zoom", middle="fov", wheel="pull"), # Thanks to John Fox, 2022_08_30
             cex = .8,
             font = 1,
             ...) {
+    library(p3d)
     family = match.arg(family)
     mod = list(family=family, cex = cex, font = font,mouseMode = mouseMode)
     par3d [ names(mod)] <- mod
