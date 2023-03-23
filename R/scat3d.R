@@ -154,6 +154,7 @@ function(x, y, z, xlab=deparse(substitute(x)), ylab=deparse(substitute(y)),
         }
     } else {  # if ! clear
         size <- Plot3d.par('size')
+        if(verbose > 1) disp(size)
     } # end clear
 
     if (is.null(groups)){

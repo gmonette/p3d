@@ -96,10 +96,10 @@ function( formula = attr(data, "formula"),
     groups <- eval( substitute(groups), data, env)
     if (verbose > 0) disp(subset)
     ff <- as.character( formula )
-    if ( verbose ) disp( ff )
+    if ( verbose > 0) disp( ff )
     if ( length(ff) != 3) stop("Formula should have form y ~ x + z [ |g ]")
     ff[3] <- sub("\\|","+",ff[3])
-    if ( verbose ) disp( ff )
+    if ( verbose > 0) disp( ff )
     fmla <- as.formula( paste( ff[2] ,"~", ff[3]))
 #    dd <- model.frame( fmla, data, subset = subset )
     # GM 2013-01-01: added na.action = na.include so data frame
@@ -113,7 +113,9 @@ function( formula = attr(data, "formula"),
     if ( ncol(dd) == 3) {
         nams <- names(dd)
         names(nams) <- c('y','x','z')
+        size_ <- Plot3d.par('size')
         Plot3d.par( data = dd, names=nams, has.groups = FALSE, col=col[1], new = TRUE)
+        Plot3d.par(size = size_)
         # GM 2013-01-02: added '[1]' to col = col
         # to avoid meaningless rainbow
         if ( verbose > 1 ) disp( Plot3d.par() )
@@ -180,7 +182,7 @@ function( formula = attr(data, "formula"),
     if ( verbose > 0 )   disp( 'Plot3d in else')
     if ( verbose > 0 ) disp( par3d('scale'))
     }
-    message("Use left mouse to rotate, middle mouse (or scroll) to zoom, right mouse to change perspective")
+    if( verbose > -1) message("Use left mouse to rotate, middle mouse (or scroll) to zoom, right mouse to change perspective")
 }
 
 
