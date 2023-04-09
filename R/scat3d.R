@@ -73,9 +73,9 @@ function(x, y, z, xlab=deparse(substitute(x)), ylab=deparse(substitute(y)),
     if ( verbose > 1 ) disp(clear)
     if ( clear ) {
     	#	rgl.open()
-        rgl.clear()
-        rgl.viewpoint(fov=fov)
-        rgl.bg(col=bg.col, fogtype=fogtype)
+        clear3d()   # rgl.clear()
+        view3d(fov=fov)   # rgl.viewpoint(fov=fov)
+        bg3d(color= bg.col, fogtype = fogtype) # rgl.bg(col=bg.col, fogtype=fogtype)
         valid <- if (is.null(groups)) complete.cases(x, y, z)
             else complete.cases(x, y, z, groups)
         x <- x[valid]
@@ -103,18 +103,18 @@ function(x, y, z, xlab=deparse(substitute(x)), ylab=deparse(substitute(y)),
              if ( "z" %in% origin ) axz[1] <- 0
         }
         if(axes){
-            rgl.lines( axx[ c(1,2) ], axy[ c(1,1) ] , axz [ c(1,1) ], color = axis.col)  # x
-            rgl.lines( axx[ c(1,1) ], axy[ c(1,2) ] , axz [ c(1,1) ], color = axis.col)  # y
-            rgl.lines( axx[ c(1,1) ], axy[ c(1,1) ] , axz [ c(1,2) ], color = axis.col)  # z
+            lines3d( axx[ c(1,2) ], axy[ c(1,1) ] , axz [ c(1,1) ], color = axis.col)  # x
+            lines3d( axx[ c(1,1) ], axy[ c(1,2) ] , axz [ c(1,1) ], color = axis.col)  # y
+            lines3d( axx[ c(1,1) ], axy[ c(1,1) ] , axz [ c(1,2) ], color = axis.col)  # z
 
             # rgl.texts(1, 0, 0, xlab, adj=1, color=text.col)
             # rgl.texts(0, 1, 0, ylab, adj=1, color=text.col)
             # rgl.texts(0, 0, 1, zlab, adj=1, color=text.col)
 
 
-            rgl.texts(axx[2], axy[1], axz[1] , xlab, adj=1, color=text.col)
-            rgl.texts(axx[1], axy[2], axz[1] , ylab, adj=1, color=text.col)
-            rgl.texts(axx[1], axy[1], axz[2] , zlab, adj=1, color=text.col)
+            text3d(axx[2], axy[1], axz[1] , xlab, adj=1, color=text.col)
+            text3d(axx[1], axy[2], axz[1] , ylab, adj=1, color=text.col)
+            texts3d(axx[1], axy[1], axz[2] , zlab, adj=1, color=text.col)
         }
         scale <-  1/c( diff(range(c(axx,xlim))), diff(range(c(axy,ylim))), diff(range(c(axz,zlim))))
         scale[is.na(scale)] <- max( scale, na.rm = TRUE)
@@ -158,13 +158,13 @@ function(x, y, z, xlab=deparse(substitute(x)), ylab=deparse(substitute(y)),
     } # end clear
 
     if (is.null(groups)){
-        if (size > threshold) rgl.spheres(x, y, z, color=point.col, radius=size,alpha=alpha)
-            else rgl.points(x, y, z, color=point.col,alpha=alpha)
+        if (size > threshold) spheres3d(x, y, z, color=point.col, radius=size,alpha=alpha)
+            else points3d(x, y, z, color=point.col,alpha=alpha)
             }
     else {
-        if (size > threshold) rgl.spheres(x, y, z,
+        if (size > threshold) spheres3d(x, y, z,
             color=surface.col[as.numeric(groups)], radius=size,alpha=alpha)
-        else rgl.points(x, y, z, color=surface.col[as.numeric(groups)],alpha=alpha)
+        else points3d(x, y, z, color=surface.col[as.numeric(groups)],alpha=alpha)
         }
 
     par3d(ignoreExtent = TRUE)
@@ -195,7 +195,7 @@ function(x, y, z, xlab=deparse(substitute(x)), ylab=deparse(substitute(y)),
                 if (fill) shade3d(ellips, col=surface.col[j], alpha=0.1, lit=FALSE)
                 if (grid) wire3d(ellips, col=surface.col[j], lit=FALSE)
                 coords <- ellips$vb[, which.max(ellips$vb[1,])]
-                if (!surface) rgl.texts(coords[1] + 0.05, coords[2], coords[3], group,
+                if (!surface) text3d(coords[1] + 0.05, coords[2], coords[3], group,
                     col=surface.col[j])
                 }
             }
@@ -219,15 +219,15 @@ function(x, y, z, xlab=deparse(substitute(x)), ylab=deparse(substitute(y)),
                     )
                 if (model.summary) summaries[[f]] <- summary(mod)
                 yhat <- matrix(predict(mod, newdata=dat), grid.lines, grid.lines)
-                if (fill) rgl.surface(vals.x, vals.z, yhat, color=surface.col[i],
+                if (fill) surface3d(vals.x, vals.z, yhat, color=surface.col[i],
                     alpha=0.5, lit=FALSE)
-                if(grid) rgl.surface(vals.x, vals.z, yhat, color=if (fill) grid.col
+                if(grid) surface3d(vals.x, vals.z, yhat, color=if (fill) grid.col
                     else surface.col[i], alpha=0.5, lit=FALSE, front="lines", back="lines")
                 if (residuals){
                     n <- length(y)
                     fitted <- fitted(mod)
                     colors <- ifelse(residuals(mod) > 0, pos.res.col, neg.res.col)
-                    rgl.lines(as.vector(rbind(x,x)), as.vector(rbind(y,fitted)),
+                    lines3d(as.vector(rbind(x,x)), as.vector(rbind(y,fitted)),
                         as.vector(rbind(z,z)), color=as.vector(rbind(colors,colors)))
                     }
                 }
@@ -249,12 +249,12 @@ function(x, y, z, xlab=deparse(substitute(x)), ylab=deparse(substitute(y)),
                         select.obs <- groups == group
                         yhat <- matrix(predict(mod, newdata=cbind(dat, groups=group)),
                             grid.lines, grid.lines)
-                        if (fill) rgl.surface(vals.x, vals.z, yhat, color=surface.col[j],
+                        if (fill) surface3d(vals.x, vals.z, yhat, color=surface.col[j],
                             alpha=0.5, lit=FALSE)
-                        if (grid) rgl.surface(vals.x, vals.z, yhat, color=if (fill) grid.col
+                        if (grid) surface3d(vals.x, vals.z, yhat, color=if (fill) grid.col
                             else surface.col[j], alpha=0.5, lit=FALSE,
                                 front="lines", back="lines")
-                        rgl.texts(0, predict(mod, newdata=data.frame(x=0, z=0,
+                        text3d(0, predict(mod, newdata=data.frame(x=0, z=0,
                             groups=group)), 0,
                             paste(group, " "), adj=1, color=surface.col[j])
                         if (residuals){
@@ -262,7 +262,7 @@ function(x, y, z, xlab=deparse(substitute(x)), ylab=deparse(substitute(y)),
                             xx <- x[select.obs]
                             zz <- z[select.obs]
                             fitted <- fitted(mod)[select.obs]
-                            rgl.lines(as.vector(rbind(xx,xx)),
+                            lines3d(as.vector(rbind(xx,xx)),
                                 as.vector(rbind(yy,fitted)), as.vector(rbind(zz,zz)),
                                 col=surface.col[j])
                             }
@@ -290,12 +290,12 @@ function(x, y, z, xlab=deparse(substitute(x)), ylab=deparse(substitute(y)),
                         if (model.summary)
                             summaries[[paste(f, ".", group, sep="")]] <- summary(mod)
                         yhat <- matrix(predict(mod, newdata=dat), grid.lines, grid.lines)
-                        if (fill) rgl.surface(vals.x, vals.z, yhat, color=surface.col[j],
+                        if (fill) surface3d(vals.x, vals.z, yhat, color=surface.col[j],
                             alpha=0.5, lit=FALSE)
-                        if (grid) rgl.surface(vals.x, vals.z, yhat, color=if (fill) grid.col
+                        if (grid) surface3d(vals.x, vals.z, yhat, color=if (fill) grid.col
                             else surface.col[j], alpha=0.5, lit=FALSE,
                                 front="lines", back="lines")
-                        rgl.texts(0, predict(mod,
+                        text3d(0, predict(mod,
                             newdata=data.frame(x=0, z=0, groups=group)), 0,
                             paste(group, " "), adj=1, color=surface.col[j])
                         if (residuals){
@@ -303,7 +303,7 @@ function(x, y, z, xlab=deparse(substitute(x)), ylab=deparse(substitute(y)),
                             xx <- x[select.obs]
                             zz <- z[select.obs]
                             fitted <- fitted(mod)
-                            rgl.lines(as.vector(rbind(xx,xx)), as.vector(rbind(yy,fitted)),
+                            lines3d(as.vector(rbind(xx,xx)), as.vector(rbind(yy,fitted)),
                                 as.vector(rbind(zz,zz)),
                                 col=surface.col[j])
                             }
@@ -314,7 +314,7 @@ function(x, y, z, xlab=deparse(substitute(x)), ylab=deparse(substitute(y)),
         }
     if (revolutions > 0) {
         for (i in 1:revolutions){
-            for (angle in seq(1, 360, length=360/speed)) rgl.viewpoint(-angle, fov=fov)
+            for (angle in seq(1, 360, length=360/speed)) view3d(-angle, fov=fov)
             }
         }
     if( verbose) disp( par3d())

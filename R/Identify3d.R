@@ -130,7 +130,7 @@ function (
     # x <- (x - min(x))/(max(x) - min(x))
     # y <- (y - min(y))/(max(y) - min(y))
     # z <- (z - min(z))/(max(z) - min(z))
-    rgl.bringtotop(stay=stay)
+    if (.Platform$OS.type == "windows") rgl.bringtotop(stay=stay)
     identified <- character(0)
     groups <- if (!is.null(groups)) as.numeric(groups[valid])
     if (debug) disp(groups)
@@ -146,7 +146,7 @@ function (
         if (debug) disp( col[groups])
         if (debug) disp( labels.pad[which] )
         if (debug) disp( cols )
-        rgl.texts(x[which], y[which] + offset, z[which], labels.pad[which],
+        text3d(x[which], y[which] + offset, z[which], labels.pad[which],
             color = cols, adj = adj,...)
         identified <- c(identified, labels[which])
         }
@@ -205,7 +205,7 @@ Flag3d <-
 #     disp(col[groups])
 #     disp(cols)
 #     disp(labels.pad[which])
-      rgl.texts(x[which], y[which] + offset, z[which], labels.pad[which],
+      text3d(x[which], y[which] + offset, z[which], labels.pad[which],
                 color = cols, adj = adj,...)
     labels[which]
   }

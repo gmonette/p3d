@@ -106,7 +106,7 @@ Fit3d <-
       if (base.grid == TRUE)
         yhat[] <- bbox[3]
       if (fill)
-        rgl.surface(
+        surface3d(
           xvals,
           zvals,
           yhat,
@@ -116,7 +116,7 @@ Fit3d <-
           ...
         )
       if (grid)
-        rgl.surface(
+        surface3d(
           xvals,
           zvals,
           yhat,
@@ -142,7 +142,7 @@ Fit3d <-
       if (base.grid == TRUE)
         fitted <- 0 * fitted + bbox[3]
       if (has.groups) {
-        rgl.lines(
+        lines3d(
           as.vector(rbind(xx, xx)),
           as.vector(rbind(yy,
                           fitted)),
@@ -153,7 +153,7 @@ Fit3d <-
         )
       }
       else {
-        rgl.lines(
+        lines3d(
           as.vector(rbind(xx, xx)),
           as.vector(rbind(yy,
                           fitted)),

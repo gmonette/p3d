@@ -2,8 +2,14 @@
 ## p3d:spin.R
 ## 2011-12-22
 ##
-
-
+#' Change viewpoint
+#'
+#' @param theta rotation about vertical (y) axis in degrees, default: 0
+#' @param phi angular elevation above horizontal plane, default: 15
+#' @param fov perspective
+#' @param zoom magnification
+#' @param scale changes bounding box and axes but not data
+#'
 #' @export
 spin <-
 function( theta=0, phi=15,
@@ -17,14 +23,19 @@ function( theta=0, phi=15,
           # without arguments it should just start spinning
           # USAGE: see rgl.viewpoint and rgl.snapshot
           # rgl.bringtotop(stay = FALSE)
-          rgl.viewpoint( theta=theta, phi = phi,
+          view3d( theta=theta, phi = phi,
                 fov = fov, zoom = zoom, scale = scale)
 
 }
-
+#' Trimming with a spline
+#'
+#' Pull in the ends of a variable
+#'
+#' @param x variable to have ends bent
+#' @param linear proportion in middle left unbent, default: 0.8
 
 #' @export
-bend <- function(x,linear = .8) {
+bend <- function(x, linear = .8) {
   if ( linear >= 1) return(x)
   low <- min(x,na.rm=T)
   high <- max(x,na.rm=T)

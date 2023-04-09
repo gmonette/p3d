@@ -85,13 +85,7 @@ function (...)
     }
     args <- list(...)
     #disp(args)
-    getdim <- function(nam, args) {
-        pos <- regexpr(nam, names(args))
-        arg.ind <- pos > 0
-        if (length(pos <- pos[pos > 0]) == 0)
-            return(0)
-        cbind(args[arg.ind][[1]])[, pos]
-    }
+
     if (is.null(names(args)))
         names(args) <- rep("", length(args))
     nn <- names(args)
@@ -129,6 +123,27 @@ function (...)
     names(ret) <- sub("^col$","color",names(ret))
     # warning("Using an experimental version of args3d that changes argname from 'col' to 'color'")
     ret
+}
+
+#' @export
+getdim <- function(nam, args) {
+  pos <- regexpr(nam, names(args))
+  args <- lapply(args, rbind)
+  arg.ind <- pos > 0
+  if (length(pos <- pos[pos > 0]) == 0)
+    return(0)
+  cbind(args[arg.ind][[1]])[, pos]
+}
+
+if(FALSE) {
+  # tests
+  a <- list(xy=cbind(1:3,2:4), z = 0)
+  a <- list(xyx=c(1,2,3))
+  a <- list(xyx=rbind(c(1,2,3)))
+  a <- list(xy=rbind(c(1,2)), z = 3:5)
+  getdim('x', a)
+  getdim('y', a)
+  getdim('z', a)
 }
 
 

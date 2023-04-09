@@ -12,8 +12,12 @@
 
 #' @export
 fg <- function(stay = TRUE) {
-  Plot3d.par(stay=stay)
-  rgl.bringtotop(stay = stay)
+  if (.Platform$OS.type != "windows") {
+    rgl.bringtotop()
+  } else {
+    rgl.bringtotop(stay = stay)
+    Plot3d.par(stay=stay)
+  }
 }
 
 #' @export

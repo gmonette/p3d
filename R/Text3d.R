@@ -28,5 +28,5 @@ Text3d.default <-
 function(...,col='blue'){
   a <- list(...,col=col)
   if( !any(grepl("^text$",names(a)))) names(a)[names(a)==''] <- 'text'
-  do.call("rgl.texts", do.call(args3d,a))
+  do.call("text3d", do.call(args3d,a))
 }
