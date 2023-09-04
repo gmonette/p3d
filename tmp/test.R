@@ -5,15 +5,22 @@ head(Smoking)
 rownames(Smoking) = Smoking$Country
 
 Init3d(family = 'serif', cex = 1.5)
-Plot3d( LE ~ CigCon + HealthExpPC | Continent, Smoking)
+Plot3d( LE ~ CigCon + HealthExpPC | Continent, Smoking) %>% system.time
 Axes3d()
 # Identify3d(pad=1)
 Id3d()
 
-Text3d(xyz=c(0,0,0), text = 'HERE')
+if(FALSE){
+  Text3d(xyz=c(2000,50,3000), text = 'HERE')
+  Pop3d()
+  Text3d(x=2000,yz=c(50,3000), text = 'HERE')
+  Text3d(x=2000,zy=c(3000,50), text = 'HERE')
+}
 
-fit = lm( LE ~ CigCon + log(HealthExpPC) +I(CigCon^2) + I(log(HealthExpPC)^2) + I(CigCon*log(HealthExpPC)), Smoking)
-Fit3d( fit )
+
+
+fit <- lm( LE ~ CigCon + log(HealthExpPC) +I(CigCon^2) + I(log(HealthExpPC)^2) + I(CigCon*log(HealthExpPC)), Smoking)
+Fit3d( fit , grid.lines = 101, grid = F)
 fitl <- lm( LE ~ CigCon + HealthExpPC, Smoking)
 Fit3d( fitl, col = 'pink')
 # HEpCap is highly 'skewed': dense on left, long tail on right

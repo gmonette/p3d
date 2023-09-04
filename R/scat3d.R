@@ -219,9 +219,9 @@ function(x, y, z, xlab=deparse(substitute(x)), ylab=deparse(substitute(y)),
                     )
                 if (model.summary) summaries[[f]] <- summary(mod)
                 yhat <- matrix(predict(mod, newdata=dat), grid.lines, grid.lines)
-                if (fill) surface3d(vals.x, vals.z, yhat, color=surface.col[i],
+                if (fill) rgl_surface(vals.x, vals.z, yhat, color=surface.col[i],
                     alpha=0.5, lit=FALSE)
-                if(grid) surface3d(vals.x, vals.z, yhat, color=if (fill) grid.col
+                if(grid) rgl_surface(vals.x, vals.z, yhat, color=if (fill) grid.col
                     else surface.col[i], alpha=0.5, lit=FALSE, front="lines", back="lines")
                 if (residuals){
                     n <- length(y)
@@ -249,9 +249,9 @@ function(x, y, z, xlab=deparse(substitute(x)), ylab=deparse(substitute(y)),
                         select.obs <- groups == group
                         yhat <- matrix(predict(mod, newdata=cbind(dat, groups=group)),
                             grid.lines, grid.lines)
-                        if (fill) surface3d(vals.x, vals.z, yhat, color=surface.col[j],
+                        if (fill) rgl_surface(vals.x, vals.z, yhat, color=surface.col[j],
                             alpha=0.5, lit=FALSE)
-                        if (grid) surface3d(vals.x, vals.z, yhat, color=if (fill) grid.col
+                        if (grid) rgl_surface(vals.x, vals.z, yhat, color=if (fill) grid.col
                             else surface.col[j], alpha=0.5, lit=FALSE,
                                 front="lines", back="lines")
                         text3d(0, predict(mod, newdata=data.frame(x=0, z=0,
@@ -290,9 +290,9 @@ function(x, y, z, xlab=deparse(substitute(x)), ylab=deparse(substitute(y)),
                         if (model.summary)
                             summaries[[paste(f, ".", group, sep="")]] <- summary(mod)
                         yhat <- matrix(predict(mod, newdata=dat), grid.lines, grid.lines)
-                        if (fill) surface3d(vals.x, vals.z, yhat, color=surface.col[j],
+                        if (fill) rgl_surface(vals.x, vals.z, yhat, color=surface.col[j],
                             alpha=0.5, lit=FALSE)
-                        if (grid) surface3d(vals.x, vals.z, yhat, color=if (fill) grid.col
+                        if (grid) rgl_surface(vals.x, vals.z, yhat, color=if (fill) grid.col
                             else surface.col[j], alpha=0.5, lit=FALSE,
                                 front="lines", back="lines")
                         text3d(0, predict(mod,
