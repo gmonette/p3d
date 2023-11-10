@@ -64,7 +64,7 @@ Fit3d <- function (fit, perm = c(1,3,2),
       levels(x)
   else
     unique(x)
-  pars <- Plot3d.par()
+  pars <- p3d:::Plot3d.par()
   if (missing(col))
     col <- pars$col
   if (verbose > 1)
@@ -114,7 +114,7 @@ Fit3d <- function (fit, perm = c(1,3,2),
     arg2 <- xyz[[perm[2]]]
     arg3 <- xyz[[perm[3]]]
     if (fill)
-      rgl_surface(
+      p3d:::rgl_surface(
         arg1,
         arg2,
         arg3,
@@ -127,7 +127,7 @@ Fit3d <- function (fit, perm = c(1,3,2),
         ...
       )
     if (grid)
-      rgl_surface(
+      p3d:::rgl_surface(
         arg1,
         arg2,
         arg3,
@@ -187,10 +187,26 @@ Fit3d <- function (fit, perm = c(1,3,2),
 
 if(FALSE){
 library(p3d)
-    dd <- expand.grid(x= 1:10, z = seq(10,100,10), w = 1:3)
-  dd$y <- with(dd, x*w + z/5 +rnorm(x))
+  x <- 1:10
+  z <- seq(10,100,10)
+
+    dd <- expand.grid(x= x, z = z)
+    y <- with(dd, 2*x +z)
+    dd$y <- y
+  y <- array(y, dim = c(length(x), length(z)))
+  Plot3d(y ~ x + z, dd)
+  fit <- lm(y ~ x + z, dd)
+  Fit3d(fit, perm = c(2,3,1))
+  Axes3d()
+  dim(y)
+  surface3d(x,y,z)
+
+    dd$y <- with(dd, x*w + z/5 +rnorm(x))
   Init3d()
-  Plot3d(y ~ x + z | w, dd)
   fit <- lm(y ~ x*z*w, dd)
-  p3d::Fit3d(fit)
+  Axes3d()
+  Fit3d(fit, perm = c(1,2,3))
+  Fit3d(fit, perm = c(1,3,2))
+  Fit3d(fit, perm = c(3,1,2))
+
 }

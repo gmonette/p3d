@@ -30,7 +30,7 @@ function( par3d = list(),
     par3d [ names(mod)] <- mod
     open3d(...)
     do.call('par3d', par3d)
-    fg()
+    if(.Platform$OS.type == 'windows') fg()
 }
 
 ## Alternative version that uses open3d
