@@ -5,11 +5,11 @@
 #'
 #'
 #' **** COPIED Projects/Suppresssion/Quadrics.R 2023-06-29 ****
-#' 
+#'
 #' For p3d: incorporate countour3d from misc3d
-#' 
-#' 
-##' # Representation using homegeneous coordinates
+#'
+#'
+##' # Representation using homogeneous coordinates
 #'
 #' ![](Files/Quadrics_in_homogeneous_coordinates.pdf)
 #'
@@ -17,11 +17,62 @@ library(spida2)
 library(p3d)
 library(misc3d)
 
+
+#'
+#' Quadrics in R2
+#'
+plot(ell())
+?ell
+
+
+
+contour.function <- function(f, levels = 0, n = 100, ...) {
+  axs <- par()$usr
+  x <- seq(axs[1],axs[2], length.out = n)
+  y <- seq(axs[3],axs[4], length.out = n)
+  z <- outer(y, x, f)
+  contour(x, y, z, levels = levels, add = T,...)
+}
+plot(5*c(-1,1),5*c(-1,1), type = 'n', asp = 1)
+
+pq <- function(a,b,lambda = 0 ,...) {
+  # plot quadric with parameters a > b >0 and lambda < a
+  f <- function(x,y) x^2/(a-lambda) + y ^2/(b-lambda)
+  contour(f, 1, labels = lambda, ...)
+}
+pq(2,1, 1.0001, col = 'red',n = 500)
+pq(2,1, 1.5, col = 'green',n = 500)
+pq(2,1, 1.9, col = 'green',n = 500)
+pq(2,1, 1.9999, col = 'green',n = 500)
+pq(2,1, 2.1, col = 'green',n = 500)
+
+jacobi_coords <- function(x,y,a,b) {
+  f <- function(lambda) {
+    1 - x^2/(a-lambda) + y^2/(b - lambda)
+  }
+  stopifnot(a > b)
+  l1 <- uniroot(f, c(-1000000, b))
+  l2 <- uniroot(f, c(b,a))
+  c(l1, l2)
+}
+
+jacobi_coords (2,3,2,1)
+
+?contour
+
+f <- function(x,y) x^2 + y^2
+contour(f,1)
+?contour
+plot(0,0)
+#'
+##' # Contours in 3d                                                             ####
+#'
+debug(contour.function)
 init2 <- function() {
   plot(rbind(c(0,0)), xlim = c(-4,4), asp = 1, type = 'n')
 }
 c2d <- function(    # draw contour(s), i.e. level sets or a function in 3d
-  fun,        # a function of 2 arguments 
+  fun,        # a function of 2 arguments
   at = 0,
   levels = at,  # levels of fun for implicit surface
   n = 100,     # grid resolution
@@ -30,14 +81,14 @@ c2d <- function(    # draw contour(s), i.e. level sets or a function in 3d
   labcex = 0.1,
   scale = 1,
   add = TRUE, draw = T,
-  x = Seq(bbox[1],bbox[2], n, xs), 
-  y = Seq(bbox[3],bbox[4], n, ys), 
-  xs = 1, ys = 1,                       # expand beyond bounding box                 
+  x = Seq(bbox[1],bbox[2], n, xs),
+  y = Seq(bbox[3],bbox[4], n, ys),
+  xs = 1, ys = 1,                       # expand beyond bounding box
   ...) {
-  # 
+  #
   # contour3d using bounding box parameters
-  # 
-  # 
+  #
+  #
   Seq <- function(from,to,n, expand) {
     mid <- (to + from)/2
     ran <- (to - from)/2
@@ -47,13 +98,13 @@ c2d <- function(    # draw contour(s), i.e. level sets or a function in 3d
   means <- c(bbox[1] + bbox[2], bbox[3] + bbox[4])[c(1,1,2,2)]/2
   bbox <- means + scale * (bbox - means)
   # if x,y,z not provided as arguments then bbox is used
-  # 
+  #
   # Use vectorized function
-  # 
+  #
   grid <- expand.grid(x = x, y = y)
   z <- with(grid, fun(x, y))
   z <- matrix(z, nrow = length(x))
-  # 
+  #
   # z <- matrix(NA, length(x), length(y))
   # for(i in seq_along(x)) {
   #   for(j in seq_along(y)) {
@@ -68,7 +119,7 @@ init2()
 
 init <- function(scale = 4, new = F, cex = 1.2){
   if(new||(cur3d()==0)) Init3d(cex=cex)
-  di <- function(scale=4) { 
+  di <- function(scale=4) {
     data.frame(x=scale*c(-1,1), y=scale*c(-1,1),z=scale*c(-1,1))
   }
   Plot3d(y ~ x + z, di(scale))
@@ -85,7 +136,7 @@ Plane <- function(L=c(1,1,1), const = 1) {
   }
   attr(ret, 'parms') <- list(L = c(L,const))
   ret
-} 
+}
 Tplane <- function(V, L, at = NULL) {
   # tangent plane to V perpendicular to L, or at intersection of L and V
   if(is.null(at)) Plane(-L, sqrt(rbind(c(L)) %*% V %*% cbind(c(L))))
@@ -102,7 +153,7 @@ Quad <- function(        # function implicitly defining quadric surface
     mu = c(0,0,0),       # center
     shape = diag(3),     # inverse of quadratic form coefficients
     radius = 1,          #
-    M11 = solve(shape),  # 
+    M11 = solve(shape),  #
     a12 = M11 %*% cbind(mu),  # bounding column in homogeneous coordinates
     M = rbind(            # Matrix in homogeneous representation
       cbind(M11, a12),
@@ -123,21 +174,21 @@ Qm <- function(M, const = -1){
   M[4,4] <- const
   ret <- function(x,y,z) {
     X <- cbind(x,y,z,1)
-    rowSums((X%*%M)*X) 
+    rowSums((X%*%M)*X)
   }
   attr(ret,'parms') <- list(Mh = M)
   ret
-} 
+}
 Qv <- function(V, const = -1){
   M <- rbind(cbind(solve(V),0),0)
   M[4,4] <- const
   ret <- function(x,y,z) {
     X <- cbind(x,y,z,1)
-    rowSums((X%*%M)*X) 
+    rowSums((X%*%M)*X)
   }
   attr(ret,'parms') <- list(V = V)
   ret
-} 
+}
 
 Quadh <- function(d = c(1,1,1), od = c(0,0,0), v = c(0,0,0), const =  -1) {
   M <- matrix(0,4,4)
@@ -147,7 +198,7 @@ Quadh <- function(d = c(1,1,1), od = c(0,0,0), v = c(0,0,0), const =  -1) {
   M[rbind(c(2,1),c(3,1),c(3,2),c(1,2),c(1,3),c(2,3))] <- c(od,od)
   ret <- function(x,y,z) {
     X <- cbind(x,y,z,1)
-    rowSums((X%*%M)*X) 
+    rowSums((X%*%M)*X)
   }
   attr(ret,'parms') <- list(Mh = M)
   ret
@@ -161,28 +212,28 @@ Quadlam <- function(a = c(1,1,1), d = 1/(a+lam), od = c(0,0,0), v = c(0,0,0), co
   M[rbind(c(2,1),c(3,1),c(3,2),c(1,2),c(1,3),c(2,3))] <- c(od,od)
   ret <- function(x,y,z) {
     X <- cbind(x,y,z,1)
-    rowSums((X%*%M)*X) 
+    rowSums((X%*%M)*X)
   }
   attr(ret,'parms') <- list(Mh = M)
   ret
 }
 
 c3d <- function(    # draw contour(s), i.e. level sets or a function in 3d
-  fun,        # a function of 3 arguments 
+  fun,        # a function of 3 arguments
   level = 0,  # levels of fun for implicit surface
   n = 30,     # grid resolution
   bbox = par3d()$bbox,
   scale = 1,
   add = TRUE, draw = T,
-  x = Seq(bbox[1],bbox[2], n, xs), 
-  y = Seq(bbox[3],bbox[4], n, ys), 
+  x = Seq(bbox[1],bbox[2], n, xs),
+  y = Seq(bbox[3],bbox[4], n, ys),
   z = Seq(bbox[5],bbox[6], n, zs),
-  xs = 1, ys = 1, zs = 1,                       # expand beyond bounding box                 
+  xs = 1, ys = 1, zs = 1,                       # expand beyond bounding box
   ...) {
-  # 
+  #
   # contour3d using bounding box parameters
-  # 
-  # 
+  #
+  #
   Seq <- function(from,to,n, expand) {
     mid <- (to + from)/2
     ran <- (to - from)/2
@@ -193,7 +244,7 @@ c3d <- function(    # draw contour(s), i.e. level sets or a function in 3d
   bbox <- means + scale * (bbox - means)
   # if x,y,z not provided as arguments then bbox is used
   contour3d(fun, level, x,y,z ,add = add, draw = draw, ...)
-} 
+}
 
 c3d_ <- function(   # older version ????
   fun, level = 0,  n=30,
@@ -204,8 +255,8 @@ c3d_ <- function(   # older version ????
   yext = scale,
   zext = scale,
   add = TRUE, draw = T,
-  x.inc = (bbox[2] - bbox[1])/density, 
-  y.inc = (bbox[4] - bbox[3])/density, 
+  x.inc = (bbox[2] - bbox[1])/density,
+  y.inc = (bbox[4] - bbox[3])/density,
   z.inc = (bbox[6] - bbox[5])/density,
   x = ext(bbox[1:2], xext, x.inc),
   y = ext(bbox[3:4], yext, y.inc),
@@ -217,7 +268,7 @@ c3d_ <- function(   # older version ????
   }
   # if x,y,z not provided as arguments then bbox is used
   contour3d(fun, level, x,y,z ,add = add, draw = draw, ...)
-} 
+}
 
 
 
@@ -252,7 +303,7 @@ for(lam in seq(0,7,.1)+.05){
 #' Test tangent planes
 init(); Axes3d()
 lam <- 2.5
-d <- c(.5,1,2)^2   
+d <- c(.5,1,2)^2
 # Qm(diag(1/d)) %>% c3d(color='red', alpha = .2, n = 50)
 Qv(diag(d)) %>%  c3d(color='red', alpha = .2, n = 50)
 Tplane(diag(d), c(1,1,1)) %>% c3d
@@ -263,7 +314,7 @@ rbind(0, 10*c(1,1,1)) %>% Lines3d(lwd = 2)
 #' Confocal quadrics
 #'
 #' Start with data ellipse
-#' 
+#'
 init(); Axes3d()
 
 # linear pencil
@@ -278,7 +329,7 @@ for( lam in lams ) {
   Qm(diag(d)+lam*diag(3)) %>%  c3d(color='blue', alpha = .1, n = 50)
 }
 # confocal pencil
-# 
+#
 d <- 1:3
 Qv(diag(d)) %>%  c3d(color='red', alpha = .2, n = 50)
 for( lam in lams ) {
@@ -294,38 +345,38 @@ Lines3d(rbind(c(0,0,0), c(10,10,10)), lwd =3, color = 'black')
 Plane(c(1,1,1), 2) %>% c3d(color='red', alpha = .1)
 Plane(c(1,1,1), 2) %>% c3d(color='red', alpha = .1)
 
-# 
+#
 # - Given an ellipse variance V
 # - a direction L
-# - find 
-#   - the plane tangent to V at L int V   
+# - find
+#   - the plane tangent to V at L int V
 #   - the plane orthogonal to L that is tangent to V
 
 # in 2 dimenstions
-# 
+#
 shape <- cbind(c(2,1),c(1,2))
 shape <- diag(c(2,.2))
-ell(shape=shape) %>% plot(type='l', xlim = c(-3,3) , ylim = c(-3,3), asp = 1) 
+ell(shape=shape) %>% plot(type='l', xlim = c(-3,3) , ylim = c(-3,3), asp = 1)
 lam <- 0
-ell(shape=solve(shape)) %>% plot(type='l', xlim = c(-3,3) , ylim = c(-3,3), asp = 1) 
+ell(shape=solve(shape)) %>% plot(type='l', xlim = c(-3,3) , ylim = c(-3,3), asp = 1)
 {
-ell(shape=solve((1-lam)*shape + lam * diag(2))) %>% lines 
+ell(shape=solve((1-lam)*shape + lam * diag(2))) %>% lines
   lam <- lam + .1
 }
 
 lam <- 0
-ell(shape=(shape)) %>% plot(type='l', xlim = c(-3,3) , ylim = c(-3,3), asp = 1) 
+ell(shape=(shape)) %>% plot(type='l', xlim = c(-3,3) , ylim = c(-3,3), asp = 1)
 {
-  ell(shape=((1-lam)*shape + lam * diag(2))) %>% lines 
+  ell(shape=((1-lam)*shape + lam * diag(2))) %>% lines
   lam <- lam + .1
 }
 
 
 
 lam <- 0
-ell(shape=solve(shape)) %>% plot(type='l', xlim = c(-3,3) , ylim = c(-3,3), asp = 1) 
+ell(shape=solve(shape)) %>% plot(type='l', xlim = c(-3,3) , ylim = c(-3,3), asp = 1)
 {
-  ell(shape=solve((1-lam)*shape + lam * diag(2))) %>% lines 
+  ell(shape=solve((1-lam)*shape + lam * diag(2))) %>% lines
   lam <- lam + .1
 }
 
@@ -334,7 +385,7 @@ ell(shape=solve(shape)) %>% plot(type='l', xlim = c(-3,3) , ylim = c(-3,3), asp 
 #Pop3d()
 IntVL(diag(1/d), c(1,1,1)) %>% rbind %>% spheres3d(radius = .05)
 IntVL(diag(1/d), c(1,1,1)) %>% rbind %>% {. %*% diag(1/d)} %>% spheres3d(radius = .05)
-IntVL(diag(1/d), c(1,1,1)) %>% rbind %>% {. %*% diag(1/d)} %>% 
+IntVL(diag(1/d), c(1,1,1)) %>% rbind %>% {. %*% diag(1/d)} %>%
   {rbind(0, .)} %>% Lines3d
 c(2,3,1) %>% Lines3d(lwd =1)
 
@@ -344,17 +395,17 @@ c(1,3,2) %>% Points3d
 {
   init(); Axes3d()
   lam <- 2.5
-  d <- (1:3)^2 - lam  
+  d <- (1:3)^2 - lam
   Qm(diag(d)) %>% c3d(color='red', alpha = .2, n = 50)
   Qm(diag(1/d)) %>% c3d(color='blue', alpha = .2, n = 50)
   Qm(diag(3)) %>% c3d(color = 'grey', alpha = .2, n = 50)
   Lines3d(rbind(c(0,0,0), c(10,10,10)))
 }
-   
+
 {
   init(); Axes3d()
   lam <- 0
-  d <- (1:3)^2 - lam  
+  d <- (1:3)^2 - lam
   Qm(diag(d)) %>% c3d(color='red', alpha = .2, n = 50)
   Qm(diag(1/d)) %>% c3d(color='blue', alpha = .2, n = 50)
   Qm(diag(3),const = -2) %>% c3d(color = 'grey', alpha = .2, n = 50)
@@ -367,7 +418,7 @@ c(1,3,2) %>% Points3d
   init(); Axes3d()
   lam <- 0
   {
-    d <- (1:3)^2 - 2.9  
+    d <- (1:3)^2 - 2.9
   Qm(diag(3),const = -2) %>% c3d(color = 'grey', alpha = .2, n = 50)
     Qm(diag(d)) %>% c3d(color='red', alpha = .2, n = 50)
     Qm(diag(1/d)) %>% c3d(color='blue', alpha = .2, n = 50)
@@ -376,7 +427,7 @@ c(1,3,2) %>% Points3d
   }
 }
 
-   
+
 
 {
   init()
@@ -390,11 +441,11 @@ c(1,3,2) %>% Points3d
 ##  Stack exchange example ####
 
 #' [Definition of an ellipsoid based on its focal points - Mathematics Stack Exchange](https://math.stackexchange.com/questions/19849/definition-of-an-ellipsoid-based-on-its-focal-points)
-#' 
+#'
 
 
 # Confocal central quadric ####
-# 
+#
 init(); Axes3d()
 
 M <- diag(1/(3:1))
@@ -420,6 +471,7 @@ while(TRUE){
   lam <- lam + .2
 }
 
+
 ?contour
 methods(contour)
 Pop3d()
@@ -433,7 +485,7 @@ conic <- function(M, constant= -1) {
   M[3,3] <- constant
   ret <- function(x,y) {
     X <- cbind(x,y,1)
-    rowSums((X%*%M)*X) 
+    rowSums((X%*%M)*X)
   }
   attr(ret,'parms') <- list(Mh = M)
   ret
@@ -445,7 +497,7 @@ conic <- function(M, constant= -1) {
   lap <- lam <- 0
   conic(diag(c(1,2))+lam * diag(2)) %>% c2d
   while(TRUE){
-    lap <- lap + .1 
+    lap <- lap + .1
     lam <- lam - .1
     readline(lam)
     conic(diag(c(1,2)) + lam * diag(2)) %>% c2d(col = 'red')
@@ -458,7 +510,7 @@ conic <- function(M, constant= -1) {
   lap <- lam <- 0
   conic(solve(diag(c(1,2))+lam * diag(2))) %>% c2d
   while(TRUE){
-    lap <- lap + .3 
+    lap <- lap + .3
     lam <- lam - .3
     readline(lam)
     conic(solve(diag(c(1,2)) + lam * diag(2))) %>% c2d(col = 'red')
@@ -471,7 +523,7 @@ conic <- function(M, constant= -1) {
   lap <- lam <- 0
   conic(solve(diag(c(1,2))+lam * diag(2))) %>% c2d
   while(TRUE){
-    lap <- lap + .3 
+    lap <- lap + .3
     lam <- lam - .3
     readline(lam)
     conic(solve(diag(c(1,2)) + lam * diag(2))) %>% c2d(col = 'red')
@@ -484,7 +536,7 @@ conic <- function(M, constant= -1) {
   lap <- lam <- 0
   conic(solve(diag(c(1,2))+lam * diag(2))) %>% c2d
   while(TRUE){
-    lap <- lap + .3 
+    lap <- lap + .3
     lam <- lam - .3
     readline(lam)
     conic(solve(diag(c(1,2)) + lam * diag(2))) %>% c2d(col = 'red')
@@ -498,7 +550,7 @@ conic <- function(M, constant= -1) {
   d <- c(.8,.3)
   conic(solve(diag(d)+lam * diag(2))) %>% c2d
   while(TRUE){
-    lap <- lap + .1 
+    lap <- lap + .1
     lam <- lam - .1
     readline(lam)
     conic(solve(diag(d) + lam * diag(2))) %>% c2d(col = 'red')
@@ -512,9 +564,9 @@ conic <- function(M, constant= -1) {
   d <- c(1.6,.6)
   conic(solve(diag(d)+lam * diag(2))) %>% c2d(col = 'green')
   conic(solve(lam * diag(d)+ (1-lam) * diag(2))) %>% c2d(col='cyan')
-  
+
   while(TRUE){
-    lap <- lap + .1 
+    lap <- lap + .1
     lam <- lam - .1
     readline(lam)
     # conic(solve((1-lam) * diag(d) + lam * diag(2))) %>% c2d(col = 'red')
@@ -529,10 +581,10 @@ conic <- function(M, constant= -1) {
   d <- c(1.6,.6)
   conic((diag(d)+lam * diag(2))) %>% c2d(col = 'green')
   conic((lam * diag(d)+ (1-lam) * diag(2))) %>% c2d(col='cyan')
-  
+
   while(TRUE){
-    
-    lap <- lap + .1 
+
+    lap <- lap + .1
     lam <- lam - .1
     readline(lam)
     #conic(solve((1-lam) * diag(d) + lam * diag(2))) %>% c2d(col = 'red')
@@ -547,10 +599,10 @@ conic <- function(M, constant= -1) {
   d <- c(.8,.6)
   conic((diag(d)+lam * diag(2))) %>% c2d(col = 'green')
   conic((lam * diag(d)+ (1-lam) * diag(2))) %>% c2d(col='cyan')
-  
+
   while(TRUE){
-    
-    lap <- lap + .1 
+
+    lap <- lap + .1
     lam <- lam - .1
     readline(lam)
     conic(solve((1-lam) * diag(d) + lam * diag(2))) %>% c2d(col = 'red')
@@ -565,10 +617,10 @@ conic <- function(M, constant= -1) {
   d <- c(.8,.6)
   conic((diag(d)+lam * diag(2))) %>% c2d(col = 'green')
   conic((lam * diag(d)+ (1-lam) * diag(2))) %>% c2d(col='cyan')
-  
+
   while(TRUE){
-    
-    lap <- lap + .1 
+
+    lap <- lap + .1
     lam <- lam - .1
     readline(lam)
     conic(((1-lam) * diag(d) + lam * diag(2))) %>% c2d(col = 'red')
@@ -583,10 +635,10 @@ conic <- function(M, constant= -1) {
   d <- c(1.2,-.2)
   conic((diag(d)+lam * diag(2))) %>% c2d(col = 'green')
   conic((lam * diag(d)+ (1-lam) * diag(2))) %>% c2d(col='cyan')
-  
+
   while(TRUE){
-    
-    lap <- lap + .1 
+
+    lap <- lap + .1
     lam <- lam + .1
     readline(lam)
     conic(((1-lam) * diag(d) + lam * diag(2))) %>% c2d(col = 'red')
@@ -602,9 +654,9 @@ conic <- function(M, constant= -1) {
   conic((diag(d)+lam * diag(2))) %>% c2d(col = 'green')
   conic(diag(d) - diag(2)) %>% c2d(col = 'black')
    #conic((lam * diag(d)+ (1-lam) * diag(2))) %>% c2d(col='cyan')
-  
+
   while(TRUE){
-    lap <- lap + .1 
+    lap <- lap + .1
     lam <- lam + .1
     readline(lam)
     conic(diag(d) + lam * diag(2)) %>% c2d(col = 'red')
@@ -630,9 +682,9 @@ conic(diag(c(1,2))+lam * diag(2)) %>% c2d
 init(new=T)
 # confocal quadrics to an ellipsoid
 ellh <- function(a) {
-  
+
   Quadh(1/(a-lam))
-    
+
 
 }
 
@@ -672,7 +724,7 @@ Quadh(c(1,1,0)) %>% c3d(color='red', alpha = .8)
 Quadh(c(1,1,0),v= 1:3) %>% c3d(color='red', alpha = .8)
 Pop3d()
 {
-  
+
 
 Quadh(c(1,1,0), v=c(0,0,0*.01)) %>% c3d(color='red', alpha = .8)
 for(i in 1:100) {
@@ -712,9 +764,9 @@ fun1(1:3,1,2)
 Plotot3d(y ~ x + z, di())
 Pop3d()
 
-  
-  
-# 
+
+
+#
 # Quad <- function(M) {
 #   function(x,y,z) {
 #     X <- cbind(x,y,z,1)
@@ -727,33 +779,33 @@ fun1 <- Quad(M)
 fun1(1:3,1,2)
 
 funh <- Quadh()
-c3d(funh)  
-  
+c3d(funh)
+
 #'
 #'
 #'
 #' Jacobi coordinates
-# 
+#
 
 #'
 #' Quad is a function that defines an ellipse in homogeneous coordinates
 #'
 
-  
-#' 
+
+#'
 
 
 #+
 #+
 #+
 knitr::knit_exit()
- 
+
 
 library(p3d)
 library(misc3d)
 Init3d()
 
-di <- function(scale=4) { 
+di <- function(scale=4) {
   data.frame(x=scale*c(-1,1), y=scale*c(-1,1),z=scale*c(-1,1))
 }
 
@@ -856,7 +908,7 @@ gs <- function(n = 40, k = 5, cmap = heat.colors, ...) {
 }
 gs(40, 5, screen=list(z = 130, x = -80), color2 = "lightgray", cmap=rainbow)
 
-## Not run: 
+## Not run:
 #Example 3: Nested contours for FMRI data.
 
 library(AnalyzeFMRI)
@@ -895,7 +947,7 @@ drawScene.rgl(contour3dObj)
 
 
 if(F){
-  
+
   f <- function(x, y) 100 / (17/((x / 365) * 0.3)) * (100 - y)
   y <- Rain <- c(1:100)
   x <- Tourism <- c(1:100)
@@ -905,16 +957,16 @@ if(F){
   Ell3d %>% methods
   p3d:::Ell3d.default
   # generate a Quad mesh object
-  
-  vertices <- c( 
+
+  vertices <- c(
     -1.0, -1.0, 0,
     1.0, -1.0, 0,
     1.0,  1.0, 0,
     -1.0,  1.0, 0
   )
   indices <- c( 1, 2, 3, 4 )
-  
-  open3d()  
+
+  open3d()
   wire3d( mesh3d(vertices = vertices, quads = indices) ,col = 'pink')
   vs <- matrix(rnorm(40), nrow = 4)
   shade3d( mesh3d(vertices = vs, quads = 1:4))
@@ -936,3 +988,4 @@ bgplot3d(plot(x, z))
 next3d(reuse = FALSE)
 legend3d("center", c("2D Points", "3D Points"), pch = c(1, 16))
 useSubscene3d(parent)
+
