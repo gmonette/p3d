@@ -1,7 +1,7 @@
 Package: p3d
 Type: Package
 Title: Plot 3d Data and Fitted Surfaces
-Version: 0.2.0.9001
+Version: 0.2.0.9002
 Date: 2025-09-08
 Author: Georges Monette
 Maintainer: Georges Monette <georges@yorku.ca>
