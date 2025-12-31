@@ -8,7 +8,7 @@ Displays labels in 3d plot.
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-Flag3d(select, x = pars$data[[pars$names["x"]]], y = pars$data[[pars$names["y"]]], z = pars$data[[pars$names["z"]]], labels = rownames(Plot3d.par("data")), groups = NULL, col = Plot3d.par()$col, adj = 0, debug = FALSE, pad = 0, offset = ((100/length(x))^(1/3)) * 0.02, ...)
+Flag3d(select, x = pars$data[[pars$names["x"]]], y = pars$data[[pars$names["y"]]], z = pars$data[[pars$names["z"]]], labels = rownames(Plot3d_par("data")), groups = NULL, col = Plot3d_par()$col, adj = 0, debug = FALSE, pad = 0, offset = ((100/length(x))^(1/3)) * 0.02, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -16,7 +16,7 @@ Flag3d(select, x = pars$data[[pars$names["x"]]], y = pars$data[[pars$names["y"]]
 a vector of labels to display. Elements will be displayed if they match a label for a point in the 3d display.
 }
   \item{x,y,z,labels,groups,col}{
-generally obtained from the 3d global object returned with Plot3d.par()
+generally obtained from the 3d global object returned with Plot3d_par()
 }
 
   \item{adj}{
@@ -70,11 +70,11 @@ G. Monette (borrowing heavily from J. Fox)
 
 ## The function is currently defined as
 function (select, x = pars$data[[pars$names["x"]]], y = pars$data[[pars$names["y"]]], 
-    z = pars$data[[pars$names["z"]]], labels = rownames(Plot3d.par("data")), 
-    groups = NULL, col = Plot3d.par()$col, adj = 0, debug = FALSE, 
+    z = pars$data[[pars$names["z"]]], labels = rownames(Plot3d_par("data")), 
+    groups = NULL, col = Plot3d_par()$col, adj = 0, debug = FALSE, 
     pad = 0, offset = ((100/length(x))^(1/3)) * 0.02, ...) 
 {
-    pars <- Plot3d.par()
+    pars <- Plot3d_par()
     if ((is.matrix(x) && (ncol(x) > 1)) || is.data.frame(x)) {
         dat <- x
         x <- dat[, 1]

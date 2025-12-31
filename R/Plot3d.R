@@ -16,10 +16,11 @@
 #' head(Smoking)
 #' rownames(Smoking) = Smoking$Country
 #'
-#' Init3d(family = 'serif', cex = 1.5)
-#' Plot3d( LE ~ CigCon + HealthExpPC | Continent, Smoking)
+#' Init3d(family = 'serif', cex = 2)
+#' Plot3d( LE ~ CigCon + HealthExpPC | Continent, Smoking,
+#'   col = palette('Set 2'))
 #' Axes3d()
-#' Id3d(pad=1)
+#' Id3d(pad=2)
 #'
 #'
 #' fit = lm( LE ~ CigCon + log(HealthExpPC) +I(CigCon^2) + I(log(HealthExpPC)^2) + I(CigCon*log(HealthExpPC)), Smoking)
@@ -100,8 +101,8 @@ Plot3d <- function(object, ...)  UseMethod("Plot3d")
 #' @param ... Parameters.
 #' @param new Open new window if TRUE. Default: FALSE
 #' @export
-Plot3d.par <- function(..., new = FALSE){
-   # A new version (2010-11-30) of Plot3d.par
+Plot3d_par <- function(..., new = FALSE){
+   # A new version (2010-11-30) of Plot3d_par
    # that maintains separate lists for each rgl window allowing
    # the selection of different windows
 
@@ -113,28 +114,28 @@ Plot3d.par <- function(..., new = FALSE){
 
   pos <- rgl.cur()
 
-  if ( !exists(".Plot3d.par",1) || pos ==0) assign(".Plot3d.par",list(),1)  # initialize
+  if ( !exists(".Plot3d_par",1) || pos ==0) assign(".Plot3d_par",list(),1)  # initialize
   if( pos == 0) pos <- 1
   if ( new ){
-    p <- get(".Plot3d.par",1)
+    p <- get(".Plot3d_par",1)
     p[[pos]] <- list()
-    assign(".Plot3d.par",p,1)
+    assign(".Plot3d_par",p,1)
   }
-  if ( length( p <- get(".Plot3d.par",1)) < pos){
-     p <- get(".Plot3d.par",1)
+  if ( length( p <- get(".Plot3d_par",1)) < pos){
+     p <- get(".Plot3d_par",1)
     p[[pos]] <- list()
-    assign(".Plot3d.par",p,1)
-  } #.Plot3d.par[[pos]] <<- list()
-  if ( length(a) == 0) return(get(".Plot3d.par",1)[[pos]])
+    assign(".Plot3d_par",p,1)
+  } #.Plot3d_par[[pos]] <<- list()
+  if ( length(a) == 0) return(get(".Plot3d_par",1)[[pos]])
   if ( !is.null(names(a))) {
-      p <- get(".Plot3d.par",1)
+      p <- get(".Plot3d_par",1)
       p[[pos]][names(a)] <- a
-      assign(".Plot3d.par",p,1)
+      assign(".Plot3d_par",p,1)
 
       ret <- p[[pos]]
    }
    else {
-  ret <- get(".Plot3d.par",1)[[pos]][[unlist(a)]]
+  ret <- get(".Plot3d_par",1)[[pos]][[unlist(a)]]
    }
  ret
  }
@@ -216,7 +217,7 @@ function( formula = attr(data, "formula"),
     fmla <- as.formula( paste( ff[2] ,"~", ff[3]))
 #    dd <- model.frame( fmla, data, subset = subset )
     # GM 2013-01-01: added na.action = na.include so data frame
-    #    in .Plot3d.par has rows matching original data set so
+    #    in .Plot3d_par has rows matching original data set so
     # > Id3d(labels = dsm$Country)
     # will work correctly
     dd <- model.frame( fmla, data, subset = subset, na.action = na.include )
@@ -226,12 +227,12 @@ function( formula = attr(data, "formula"),
     if ( ncol(dd) == 3) {
         nams <- names(dd)
         names(nams) <- c('y','x','z')
-        size_ <- Plot3d.par('size')
-        Plot3d.par( data = dd, names=nams, has.groups = FALSE, col=col[1], new = TRUE)
-        Plot3d.par(size = size_)
+        size_ <- Plot3d_par('size')
+        Plot3d_par( data = dd, names=nams, has.groups = FALSE, col=col[1], new = TRUE)
+        Plot3d_par(size = size_)
         # GM 2013-01-02: added '[1]' to col = col
         # to avoid meaningless rainbow
-        if ( verbose > 1 ) disp( Plot3d.par() )
+        if ( verbose > 1 ) disp( Plot3d_par() )
         scat3d( as.numeric(dd[[2]]), as.numeric(dd[[1]]), as.numeric(dd[[3]]),
             xlab , ylab, zlab,
             col = col[1],
@@ -253,15 +254,15 @@ function( formula = attr(data, "formula"),
         # dd[[4]] <- factor(dd[[4]])    #  (GM 2013-01-18)
         # Extend 'col' if necessary: (GM 2013-01-02)
         col <- rep(col, length.out = length(Levels(dd[[4]])))
-        Plot3d.par( data = dd, names=nams, has.groups = TRUE, col=col, new = TRUE)
-        if ( verbose > 1 ) disp( Plot3d.par() )
+        Plot3d_par( data = dd, names=nams, has.groups = TRUE, col=col, new = TRUE)
+        if ( verbose > 1 ) disp( Plot3d_par() )
         scat3d( as.numeric(dd[[2]]), as.numeric(dd[[1]]), as.numeric(dd[[3]]),
             xlab, ylab, zlab, groups = dd[[4]],
             surface = surface,
             fit = fit,
             surface.col = col, ...)
         if ( verbose > -1 ) {
-            pp <- Plot3d.par()
+            pp <- Plot3d_par()
             cats <- data.frame(x=Levels(pp$data[[pp$names['g']]]))
             #disp(cats)
             #disp(col)

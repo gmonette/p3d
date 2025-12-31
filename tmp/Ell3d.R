@@ -131,7 +131,7 @@ Ell3d.default <- function( x,  radius = 1, col,
     }
   }
 
-  pars <- Plot3d.par()
+  pars <- Plot3d_par()
   if (missing(col)) col <- pars$col
   if ((!missing(x))||(!missing(variance))){
     if( !missing(x) ) {

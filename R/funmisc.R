@@ -16,12 +16,12 @@ fg <- function(stay = TRUE) {
     rgl.bringtotop()
   } else {
     rgl.bringtotop(stay = stay)
-    Plot3d.par(stay=stay)
+    Plot3d_par(stay=stay)
   }
 }
 
 #' @export
 fg_ <- function(stay = FALSE) {
-  Plot3d.par(stay=stay)
+  Plot3d_par(stay=stay)
   rgl.bringtotop(stay = stay)
 }

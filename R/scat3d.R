@@ -126,11 +126,11 @@ function(x, y, z, xlab=deparse(substitute(x)), ylab=deparse(substitute(y)),
         # disp(scale)
         # disp(par3d('scale'))
 
-        Plot3d.par( scale = scale)
+        Plot3d_par( scale = scale)
 				par3d( zoom = 4*min(scale,na.rm=TRUE))        # need to improve zoom and fov
-				Plot3d.par( zoom = 4*min(scale,na.rm=TRUE))
+				Plot3d_par( zoom = 4*min(scale,na.rm=TRUE))
 
-        Plot3d.par( abox = c( axx, axy, axz))
+        Plot3d_par( abox = c( axx, axy, axz))
 
         ##
         ## NEED TO IMPROVE THE size ALGORITHM
@@ -142,7 +142,7 @@ function(x, y, z, xlab=deparse(substitute(x)), ylab=deparse(substitute(y)),
         # size <- size.sphere*((100/length(x))^(1/3))*0.015
         size <- sphere.size*gm(c(diff(xlim),diff(ylim),diff(zlim)),pow)*((100/length(x))^(1/3))*0.015
 
-        Plot3d.par(size=size)
+        Plot3d_par(size=size)
         if( verbose > 1 ) {
             disp(size)
             disp(xlim)
@@ -153,7 +153,7 @@ function(x, y, z, xlab=deparse(substitute(x)), ylab=deparse(substitute(y)),
             disp(axz)
         }
     } else {  # if ! clear
-        size <- Plot3d.par('size')
+        size <- Plot3d_par('size')
         if(verbose > 1) disp(size)
     } # end clear
 

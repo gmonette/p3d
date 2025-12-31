@@ -26,21 +26,21 @@ Ell3d(x, ...)
 \arguments{
   \item{x}{
     optional matrix or data frame used to generate a data ellipsoid. The default is
-    the data frame stored in Plot3d.par() when the plot was created. If \code{x} is a 
+    the data frame stored in Plot3d_par() when the plot was created. If \code{x} is a 
     data frame, then \code{Ell3d} uses the dispersion ellipse for the plotted variable 
     names in the data frame.  Thus \code{Plot3d(subset( data, Sex == 'male'), has.groups = FALSE)} will draw a dispersion ellipse for a selected subgroup provided the plotted 
     variable names exist in \code{data}.
 %%     ~~Describe \code{center} here~~
 }
   \item{col}{
-    color for ellipsoid, by default: Plot3d.par()$col.
+    color for ellipsoid, by default: Plot3d_par()$col.
 %%     ~~Describe \code{shape} here~~
 }
   \item{radius}{  of the ellipsoid (1 generates the standard ellipsoid whose
   one dimensional projections yield the mean plus or minus one standard deviation
   of the variable projected.
 }
-  \item{use.groups}{ defaults to Plot3d.par()has.groups: whether to plot one ellipsoid for
+  \item{use.groups}{ defaults to Plot3d_par()has.groups: whether to plot one ellipsoid for
   all the data or separate ellipsoids for each subgroup.
 }
   \item{alpha}{ default 0.5. Controls transparency of ellipsoid.}

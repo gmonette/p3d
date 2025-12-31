@@ -63,7 +63,7 @@
         levels(x)
     else
       unique(x)
-    pars <- Plot3d.par()
+    pars <- Plot3d_par()
     if (missing(col))
       col <- pars$col
     if (verbose > 1)

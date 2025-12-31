@@ -22,8 +22,8 @@ Identify3d(x, ...)
     x = pars$data[[pars$names['x']]],
     y = pars$data[[pars$names['y']]],
     z = pars$data[[pars$names['z']]],
-    labels = rownames(.Plot3d.par$data), groups = NULL,
-    col = Plot3d.par()$col, 
+    labels = rownames(.Plot3d_par$data), groups = NULL,
+    col = Plot3d_par()$col, 
     adj = 0, debug = FALSE, pad = 0,
     offset = ((100/length(x))^(1/3)) * 0.02,
     ...

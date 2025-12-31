@@ -64,7 +64,7 @@ Fit3d <- function (fit, perm = c(1,3,2),
       levels(x)
   else
     unique(x)
-  pars <- p3d:::Plot3d.par()
+  pars <- p3d:::Plot3d_par()
   if (missing(col))
     col <- pars$col
   if (verbose > 1)
@@ -157,13 +157,13 @@ Fit3d <- function (fit, perm = c(1,3,2),
       fitted <- 0 * fitted + bbox[3]
     if (has.groups) {
       lines3d(
-        as.vector(rbind(xx, xx)),
+        as.vector(rbind(xx, xx, NA)),
         as.vector(rbind(yy,
-                        fitted)),
-        as.vector(rbind(zz, zz)),
+                        fitted, NA)),
+        as.vector(rbind(zz, zz, NA)),
         color = rep(col[as.factor(gg)],
-                    each = 2),
-        col = rep(col[as.factor(gg)], each = 2)
+                    each = 3),
+        col = rep(col[as.factor(gg)], each = 3)
       )
     }
     else {

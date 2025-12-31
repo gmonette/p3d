@@ -88,10 +88,11 @@ data(Smoking)
 head(Smoking)
 rownames(Smoking) = Smoking$Country
 
-Init3d(family = 'serif', cex = 1.5)
-Plot3d( LE ~ CigCon + HealthExpPC | Continent, Smoking)
+Init3d(family = 'serif', cex = 2)
+Plot3d( LE ~ CigCon + HealthExpPC | Continent, Smoking,
+  col = palette('Set 2'))
 Axes3d()
-Id3d(pad=1)
+Id3d(pad=2)
 
 
 fit = lm( LE ~ CigCon + log(HealthExpPC) +I(CigCon^2) + I(log(HealthExpPC)^2) + I(CigCon*log(HealthExpPC)), Smoking)

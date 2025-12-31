@@ -20,7 +20,7 @@ function (select,labels=row.names(data), pad = 1 , ...) {
 cat("Move display using left mouse button and middle button or scroll\n")
 cat("Press right mouse button and drag a rectangle around points to be identified\n")
 cat("Click right mouse button without selecting a point to terminate\n")
-    pars <- Plot3d.par()
+    pars <- Plot3d_par()
 
     data <- pars$data
     nams <- pars$names
@@ -74,12 +74,12 @@ function (
     x = pars$data[[pars$names['x']]],
     y = pars$data[[pars$names['y']]],
     z = pars$data[[pars$names['z']]],
-    labels = rownames(Plot3d.par("data")), groups = NULL,
-    col = Plot3d.par()$col ,   # c("blue", "green", "orange", "magenta", "cyan", "red", "yellow", "gray"),
+    labels = rownames(Plot3d_par("data")), groups = NULL,
+    col = Plot3d_par()$col ,   # c("blue", "green", "orange", "magenta", "cyan", "red", "yellow", "gray"),
     adj = 0, debug = FALSE, pad = 0,
     offset = ((100/length(x))^(1/3)) * 0.02,
 	...) {
-    pars <- Plot3d.par()
+    pars <- Plot3d_par()
     stay <- !(is.null(pars$stay)||!pars$stay)
     ## added by GM Nov 9
        if ( ( is.matrix(x) && (ncol(x) > 1) ) || is.data.frame(x) ) {
@@ -166,12 +166,12 @@ Flag3d <-
     x = pars$data[[pars$names['x']]],
     y = pars$data[[pars$names['y']]],
     z = pars$data[[pars$names['z']]],
-    labels = rownames(Plot3d.par("data")), groups = NULL,
-    col = Plot3d.par()$col ,   # c("blue", "green", "orange", "magenta", "cyan", "red", "yellow", "gray"),
+    labels = rownames(Plot3d_par("data")), groups = NULL,
+    col = Plot3d_par()$col ,   # c("blue", "green", "orange", "magenta", "cyan", "red", "yellow", "gray"),
     adj = 0, debug = FALSE, pad = 0,
     offset = ((100/length(x))^(1/3)) * 0.02,
     ...) {
-    pars <- Plot3d.par()
+    pars <- Plot3d_par()
 
     ## added by GM Nov 9
     if ( ( is.matrix(x) && (ncol(x) > 1) ) || is.data.frame(x) ) {

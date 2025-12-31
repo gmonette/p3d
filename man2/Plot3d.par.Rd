@@ -1,6 +1,6 @@
-\name{Plot3d.par}
+\name{Plot3d_par}
 \Rdversion{1.1}
-\alias{Plot3d.par}
+\alias{Plot3d_par}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Manipulate parameters for 3D plotting
@@ -9,7 +9,7 @@ Manipulate parameters for 3D plotting
 Manipulate parameters for 3D plotting
 }
 \usage{
-Plot3d.par(..., new = FALSE)
+Plot3d_par(..., new = FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

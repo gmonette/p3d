@@ -64,7 +64,7 @@ Fit3d <- function (fit, perm = c(1,3,2),
       levels(x)
   else
     unique(x)
-  pars <- Plot3d.par()
+  pars <- Plot3d_par()
   if (missing(col))
     col <- pars$col
   if (verbose > 1)

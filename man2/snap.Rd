@@ -28,7 +28,7 @@ Character string appended to \code{paste(fn, n)}, for use in naming a
 related collection of figures (without incrementing \code{n}.
 }
   \item{fn}{
-Base file name with rgl.cur() appended. Can be set with Plot3d.par(snap.fn="File").
+Base file name with rgl.cur() appended. Can be set with Plot3d_par(snap.fn="File").
 }
 
   \item{inc}{

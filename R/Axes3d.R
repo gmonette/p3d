@@ -24,7 +24,7 @@ function(n=5, len= .05,col = 'black', ...) {
         drop <- ret < min(x) | ret > max(x)
         ret [!drop]
     }
-    abox <- Plot3d.par()$abox
+    abox <- Plot3d_par()$abox
 
     mat <- gen.axes( labs <- Pretty( abox[1:2],n=n), abox[c(3,5)], abox[c(4,6)],len = len)
     Lines3d( xyz = mat,col=col,lwd=1,...)
@@ -64,7 +64,7 @@ Axes3d <-
       drop <- ret < min(x) | ret > max(x)
       ret [!drop]
     }
-    pars <- Plot3d.par()
+    pars <- Plot3d_par()
     abox <- pars$abox
     dat <- pars$data
     if (is.factor(v <- dat[[2]])) {
