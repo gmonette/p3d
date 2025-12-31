@@ -10,26 +10,50 @@
 ## TODO:  Since the ellipses aren't plotted directly, it's not clear why arguments such as
 #         las, lwd, lty, etc. are needed here.  These would normally be used only if the add
 #         argument was implemented in the code for cell.default.
-
+#' Confidence ellipse for linear model
+#'
+#' See help for car::confidence.ellipse.lm
+#' except that 'cell' returns the points to form the ellipse
+#' which must be plotted with plot(...,type='l') or lines(...)
+#' Use dfn to determine Sheffe dimension, i.e. dfn = 1 to generate ordinary CIs, dfn = 2 for 2-dim CE, etc.
+#'
+#' TODO: extend to 3 dimensions if which.coef has length 3
+#'
+#' @param object object
+#' @param ... Other parameters.
+#'
 #' @export
 cell <-
 function(object, ... )  {
             UseMethod("cell")
-            help <- "
-            See help for car::confidence.ellipse.lm
-            except that 'cell' returns the points to form the ellipse
-            which must be plotted with plot(...,type='l') or lines(...)
-            -- Use dfn to determine Sheffe dimension, i.e. dfn = 1 to generate ordinary CIs, dfn = 2 for 2-dim CE, etc.
-            -- TODO: extend to 3 dimensions if which.coef has length 3
-            "
+
     }
-
-
+#' Default S3 method for \code{cell}
+#'
+#' @param object object
+#' @param which.coef coefs to be plotted.
+#' @param level Default: 0.95
+#' @param Scheffe Default: FALSE
+#' @param dfn Default: 2.
+#' @param center.pch Default: 19.
+#' @param center.cex Default: 1.5.
+#' @param segments Default: 51.
+#' @param xlab, ylab
+#' @param las Default: \code{par(las)}.
+#' @param col Default: \code{palette()[2]}
+#' @param lwd, lty
+#' @param radius Default: \code{sqrt(dfn * qf(levels, dfn, dfd))}
+#' @param add Default: FALSE.
+#' @param ... Other parameters.
+#'
+#' Draw confidence intervals
+#' @rdname cell
 #' @export
 cell.default <-
 function (object, which.coef, levels = 0.95, Scheffe = FALSE, dfn = 2,
 					center.pch = 19, center.cex = 1.5, segments = 51, xlab, ylab,
 					las = par("las"), col = palette()[2], lwd = 2, lty = 1,
+					radius = sqrt(dfn * qf(levels, dfn, dfd)),
 					add = FALSE, ...)
 	{
 
@@ -57,7 +81,7 @@ function (object, which.coef, levels = 0.95, Scheffe = FALSE, dfn = 2,
 		shape <- vcov(object)[which.coef, which.coef]
 		ret <- numeric(0)
 
-		ret <- ell( coef, shape, sqrt(dfn * qf(levels, dfn, dfd)))
+		ret <- ell( coef, shape, radius)
 		colnames(ret) <- c(xlab, ylab)
 		ret
 	}

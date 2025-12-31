@@ -1,3 +1,5 @@
+
+if(!requires('rARPACK')) remotes::install_github('yixuan/rARPACK')
 m <- matrix(rnorm(1000^2), 1000)
 library(rARPACK)
 system.time(eigen(m, only.values=T))
@@ -5,9 +7,9 @@ system.time(eigs(m, 1000))
 
 library(misc3d)
 library(rgl)
-rgl
+??rgl
 local({
-  haveRGL <- suppressWarnings(requireNamespace(rgl,quietly=TRUE))
+  #haveRGL <- suppressWarnings(requireNamespace(rgl,quietly=TRUE))
 
   ## Example 1: Bivariate quadratic
   zz<-surfaceTriangles(seq(-1,1,len=30), seq(-1,1,len=30),

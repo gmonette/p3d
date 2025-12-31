@@ -4,13 +4,101 @@
 ## 2013-01-01 GM: added na.omit = na.include for global data frame
 ##            created in Plot3d.formula
 ##
-
-
+#' Plot points in 3D
+#'
+#' Generic function to plot points in 3d
+#'
+#' @param object To dispatch.
+#' @param ... other arguments.
+#' @examples
+#' library(p3d)
+#' data(Smoking)
+#' head(Smoking)
+#' rownames(Smoking) = Smoking$Country
+#'
+#' Init3d(family = 'serif', cex = 1.5)
+#' Plot3d( LE ~ CigCon + HealthExpPC | Continent, Smoking)
+#' Axes3d()
+#' Id3d(pad=1)
+#'
+#'
+#' fit = lm( LE ~ CigCon + log(HealthExpPC) +I(CigCon^2) + I(log(HealthExpPC)^2) + I(CigCon*log(HealthExpPC)), Smoking)
+#' Fit3d( fit )
+#' fitl <- lm( LE ~ CigCon + HealthExpPC, Smoking)
+#' Fit3d( fitl, col = 'pink')
+#' # HEpCap is highly 'skewed': dense on left, long tail on right
+#' require( lattice )
+#' densityplot( Smoking$HealthExpPC )
+#'
+#' # Useful to use a transformation to make spread more even
+#' #  e.g. log
+#' # First make sure all values are positive:
+#'
+#' sort( Smoking$HealthExpPC)
+#'
+#' # Do log transformation:
+#'
+#' Smoking$LogHE <- log(Smoking$HealthExpPC)    # create log HE
+#'
+#' densityplot( Smoking$LogHE )
+#'
+#' # Also usefult to have categories:
+#'
+#' Smoking$HECat <- cut(Smoking$LogHE, 7)       # create categories
+#' summary(Smoking)
+#'
+#' Plot3d( LE ~ CigCon + LogHE |HECat, Smoking )  # condition on level of HEpC
+#' Axes3d()
+#' Ell3d()
+#' Identify3d(pad=1)
+#'
+#' # Simple regression
+#'
+#' fit.lin <- lm( LE ~ CigCon, Smoking)
+#' Fit3d( fit.lin )
+#' fit.lin2 <- lm(LE ~ CigCon, subset(Smoking, Continent != "Africa"))
+#' Fit3d( fit.lin2)
+#' Pop3d(4)
+#'
+#' # Use multiple regression (advanced version with quadratic surface)
+#'
+#' fit = lm( LE ~ CigCon + I(LogHE^2) +I(CigCon^2) + I(LogHE^2) + I(CigCon*LogHE), Smoking)
+#' Fit3d( fit, col = 'red' )
+#' Pop3d(2)
+#'
+#' # refit omitting Africa:
+#'
+#' fit.na = lm( LE ~ CigCon + I(LogHE^2) +I(CigCon^2) + I(LogHE^2)
+#'              + I(CigCon*LogHE), Smoking, subset = Continent != "Africa")
+#' Fit3d( fit.na, col = 'red' )
+#'
+#' # Marginal relationship
+#'
+#' Pop3d(4)    # pop twice for each fit
+#' fit.quad <- lm( LE ~ CigCon + I(CigCon^2) , Smoking)
+#' Fit3d( fit.quad, col = 'green')
+#'
+#' #  A quadratic surface within each Continent (overfitting?!)
+#'
+#' fit2 = lm( LE ~ Continent*(CigCon + HealthExpPC +I(CigCon^2) +
+#'                              I(HealthExpPC^2) + I(CigCon*HealthExpPC)), Smoking)
+#' Fit3d( fit2 )
+#'
+#' #  For a 2D view of the y versus x
+#'
+#' view3d(0,0,0)   # note the first parameter, theta, rotates clockwise in the vertical axis
+#' # from the initial position given by view3d(0,0,0); the second
+#' # parameter, phi, tilts the graph around a horizontal screen axis
+#' # towards the viewer.  The third parameter, fov, affects the
+#' # amount of 'perspective'. fov = 0 yields an orthographic
+#' # projection
 #' @export
-Plot3d <- function( x, y, z, ...)  UseMethod("Plot3d")
+Plot3d <- function(object, ...)  UseMethod("Plot3d")
 
-
-
+#' Maintain a list of parameters for Plot3d
+#'
+#' @param ... Parameters.
+#' @param new Open new window if TRUE. Default: FALSE
 #' @export
 Plot3d.par <- function(..., new = FALSE){
    # A new version (2010-11-30) of Plot3d.par
@@ -50,10 +138,15 @@ Plot3d.par <- function(..., new = FALSE){
    }
  ret
  }
-
-
-
-
+#' Plot a fitted model
+#'
+#' @param fit A fitted object with a \code{model.frame} and
+#'        a \code{predict} method whose predictors are
+#'        functionally dependent on the variables plotted
+#'        along the two axes of a 3D plot and an optional
+#'        categorical variable.
+#' @param ... Other arguments.
+#' @rdname Plot3d
 #' @export
 Plot3d.lm <-
 function( fit , ...) {
@@ -61,8 +154,28 @@ function( fit , ...) {
     Fit3d( fit)
 }
 
-## This is the S3 method that is used for plotting, i.e. it is called by Plot3d.default
-
+#' Plot3d S3 method for a formula
+#'
+#' @param formula A formula of the form \code{y ~ x + z} or
+#'        \code{y ~ x + z | w} where \code{y}, \code{x}, \code{z}
+#'        are numeric variables and
+#'        \code{w} is a categorical variable.
+#' @param data A data frame in which \code{formula} is evaluated.
+#' @param groups The name of a variable to serve as an alternative
+#'        to specifying a \code{w} variable in \code{formula}.
+#' @param xlab, ylab, zlab Labels for the corresponding axes.
+#' @param verbose Default: FALSE.
+#' @param col Colors for levels of the \code{w} variable.
+#' @param surface Whether to plot a surface. Default: FALSE.
+#' @param fit Default: 'smooth'.
+#' @param surface.col Color for surface.
+#' @param lines.col Default: 'gray'.
+#' @param lines.lwd Default: 1.
+#' @param theta, phi, zoom, fov Arguments for \code{view3d}
+#'        with defaults 0, 15, 1, 15, respectively.
+#' @param keep.view Do not change current view. Default: FALSE.
+#' @param ... Other arguments.
+#' @rdname Plot3d
 #' @export
 Plot3d.formula <-
 function( formula = attr(data, "formula"),
@@ -184,8 +297,14 @@ function( formula = attr(data, "formula"),
     }
     if( verbose > -1) message("Use left mouse to rotate, middle mouse (or scroll) to zoom, right mouse to change perspective")
 }
-
-
+#' Default S3 method for \code{Plot3d}
+#'
+#' @param x x-axis (horizontal) variable
+#' @param y y-axis (vertical) variable
+#' @param x z-axis (depth) variable
+#' @param xlab, ylab, zlab, groups Graphical parameters.
+#' @param ... other arguments.
+#' @rdname Plot3d
 #' @export
 Plot3d.default <-
 function(x, y, z, xlab, ylab, zlab, groups = NULL, ...) {
