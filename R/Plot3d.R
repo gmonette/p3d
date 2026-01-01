@@ -12,46 +12,56 @@
 #' @param ... other arguments.
 #' @examples
 #' library(p3d)
+#' library(spida2)
+#' library(latticeExtra)
 #' data(Smoking)
 #' head(Smoking)
-#' rownames(Smoking) = Smoking$Country
+#' rownames(Smoking) <- Smoking$Country
 #'
+#' dd <- na.omit(
+#'   subset(Smoking,
+#'          select = c(LE, CigCon, HealthExpPC,
+#'                     Continent))
+#'   )
 #' Init3d(family = 'serif', cex = 2)
-#' Plot3d( LE ~ CigCon + HealthExpPC | Continent, Smoking,
-#'   col = palette('Set 2'))
+#' Plot3d( LE ~ CigCon + HealthExpPC | Continent, dd)
 #' Axes3d()
-#' Id3d(pad=2)
-#'
-#'
-#' fit = lm( LE ~ CigCon + log(HealthExpPC) +I(CigCon^2) + I(log(HealthExpPC)^2) + I(CigCon*log(HealthExpPC)), Smoking)
-#' Fit3d( fit )
-#' fitl <- lm( LE ~ CigCon + HealthExpPC, Smoking)
-#' Fit3d( fitl, col = 'pink')
+#' Id3d(pad = 1)
+#' Id3d(pad = 1, cex = 2, col = 'black')
+#' fitlin <- lm(LE ~ CigCon, dd)
+#' Fit3d(fitlin)
+#' fitlin2 <- lm(LE ~ CigCon + HealthExpPC, dd)
+#' Fit3d(fitlin2, col = 'green')
+#' fit <- lm(LE ~ CigCon + log(HealthExpPC) +I(CigCon^2) +
+#'     I(log(HealthExpPC)^2) + I(CigCon*log(HealthExpPC)),
+#'     dd)
+#' Fit3d(fit , col = 'red')
+#' fitl <- lm(LE ~ CigCon + HealthExpPC, dd)
 #' # HEpCap is highly 'skewed': dense on left, long tail on right
-#' require( lattice )
-#' densityplot( Smoking$HealthExpPC )
+#' require(lattice)
+#' densityplot(dd$HealthExpPC)
 #'
 #' # Useful to use a transformation to make spread more even
 #' #  e.g. log
 #' # First make sure all values are positive:
 #'
-#' sort( Smoking$HealthExpPC)
+#' sort(dd$HealthExpPC)
 #'
 #' # Do log transformation:
 #'
-#' Smoking$LogHE <- log(Smoking$HealthExpPC)    # create log HE
+#' dd$LogHE <- log(dd$HealthExpPC)    # create log HE
 #'
-#' densityplot( Smoking$LogHE )
+#' densityplot( dd$LogHE )
 #'
-#' # Also usefult to have categories:
+#' # Also useful to have categories:
 #'
-#' Smoking$HECat <- cut(Smoking$LogHE, 7)       # create categories
+#' dd$HECat <- cut(dd$LogHE, 7)       # create categories
 #' summary(Smoking)
 #'
-#' Plot3d( LE ~ CigCon + LogHE |HECat, Smoking )  # condition on level of HEpC
+#' Plot3d(LE ~ CigCon + LogHE |HECat, dd)  # condition on level of HEpC
 #' Axes3d()
 #' Ell3d()
-#' Identify3d(pad=1)
+#' Id3d(pad=1)
 #'
 #' # Simple regression
 #'
@@ -185,8 +195,21 @@ function( formula = attr(data, "formula"),
             subset = NULL ,
             xlab = names(dd)[2],
             ylab = names(dd)[1], zlab = names(dd)[3],  verbose = 0,
-            col = c("blue", "green", "orange", "magenta", "cyan", "red", "yellow", "gray","darkblue", "darkgreen", "darkorange", "darkmagenta", "darkcyan", "darkred", "yellowgreen", "darkgray","aliceblue","antiquewhite","coral","purple","azure","pink",
-              "whitesmoke", "slategray"),
+            col = c("blue", "#008800", "orange",
+                    "magenta", "darkcyan", "red",
+                    "darkgray","darkblue",
+                    "cyan", "darkorange",
+                    "darkmagenta", "cyan", "darkred",
+                    "yellowgreen", "purple","gray",
+                    "#cc4466",
+                    "slategray",
+                    # "aliceblue",
+                    # "antiquewhite",
+                    "coral","purple",
+                    # "azure",
+                    "pink",
+                    "#555555",
+                    "whitesmoke"),
             surface = FALSE,
             fit = "smooth",
             surface.col = col,

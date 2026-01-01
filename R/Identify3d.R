@@ -141,8 +141,18 @@ function (
         which <- f(x, y, z)
         if (debug) disp(which)
         if (!any(which)) break
-        if (!is.null(groups)) cols <- col[groups][which] else cols <- col[1]
-        if (debug) disp( col[groups][which] )
+        # Was: if (!is.null(groups)) cols <- col[groups][which] else cols <- col[1]
+        if (!is.null(groups)) {
+          if(missing(col)) {
+            cols <- col[groups][which]
+
+          } else {
+            cols <- col
+          }
+        } else {
+          cols <- col[1]
+        }
+               if (debug) disp( col[groups][which] )
         if (debug) disp( col[groups])
         if (debug) disp( labels.pad[which] )
         if (debug) disp( cols )
@@ -200,7 +210,19 @@ Flag3d <-
 
       if ( is.numeric(select) || is.logical(select)) select <- labels[which]
       which <- labels %in% select
-      if (!is.null(groups)) cols <- col[groups][which] else cols <- col[1]
+      # Was:
+      # if (!is.null(groups)) cols <- col[groups][which] else cols <- col[1]
+      if (!is.null(groups)) {
+        if(missing(col)) {
+          cols <- col[groups][which]
+
+        } else {
+          cols <- col
+        }
+      } else {
+        cols <- col[1]
+      }
+      #
 #     disp(col)
 #     disp(col[groups])
 #     disp(cols)
