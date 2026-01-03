@@ -17,6 +17,7 @@ function (select,labels=row.names(data), pad = 1 , ...) {
       return(Flag3d(select, pad = pad, labels = labels, ...))
     }
   }
+  if(!interactive()) return(NULL)
 cat("Move display using left mouse button and middle button or scroll\n")
 cat("Press right mouse button and drag a rectangle around points to be identified\n")
 cat("Click right mouse button without selecting a point to terminate\n")
